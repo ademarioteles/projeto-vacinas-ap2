@@ -19,4 +19,14 @@ public class PacienteService {
         pacienteRepository.insert(paciente);
     }
 
+    public boolean verificarPaciente(Paciente paciente){
+        List<Paciente> obterTodos = obterTodos();
+        for(Paciente pacient:obterTodos){
+            if(paciente.getCpf().equals(pacient.getCpf())){
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

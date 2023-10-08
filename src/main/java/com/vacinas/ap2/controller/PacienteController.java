@@ -8,10 +8,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 public class PacienteController {
@@ -22,7 +21,7 @@ public class PacienteController {
     public ResponseEntity inserir(){
         Paciente pacients = new Paciente();
         Endereco endereco = new Endereco("Av. 7 de setembro",23,"Lauro","hello","Bahia");
-        pacients.setNome("Adebaldo");
+        pacients.setNome("taysa");
         pacients.setSobrenome("Souza");
         pacients.setCpf("856562314");
         pacients.setDataNascimento("26/08/1992");
@@ -31,6 +30,10 @@ public class PacienteController {
         pacients.setEndereco(endereco);
         pacienteService.inserir(pacients);
 
-        return ResponseEntity.ok("It's Work");
+        return ResponseEntity.ok(pacients);
+    }
+    @GetMapping("/vacinas")
+    public ResponseEntity<List<Paciente>> obterTodos(){
+        return ResponseEntity.ok(pacienteService.obterTodos());
     }
 }

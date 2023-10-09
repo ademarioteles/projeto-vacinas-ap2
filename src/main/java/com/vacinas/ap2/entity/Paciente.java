@@ -14,29 +14,27 @@ import javax.validation.constraints.NotNull;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Validated
 public class Paciente {
     private String id;
-    @NotNull(message = "Nome não pode está nulo.")
-    @NotEmpty(message = "Nome não pode está nulo.")
+
+    @NotEmpty(message = "O nome do paciente não foi informado!")
     private String nome;
-    @NotNull(message = "Sobrenome não pode está nulo.")
-    @NotEmpty(message = "CPF não pode está nulo.")
+
+    @NotEmpty(message = "O sobronome do paciente não foi informado!")
     private String sobrenome;
-    @NotNull(message = "CPF não pode está nulo.")
-    @NotEmpty(message = "CPF não pode está nulo.")
+
+    @NotEmpty(message = "O CPF do paciente não foi informado!")
     private String cpf;
-    @NotNull(message = "Data de Nascimento não pode está nulo.")
-    @NotEmpty(message = "Data de Nascimento não pode está nulo.")
+
+    @NotEmpty(message = "A data de nascimento do paciente não foi informado!")
     private String dataNascimento;
-    @NotNull(message = "Sexo não pode está nulo.")
-    @NotEmpty(message = "Sexo não pode está nulo.")
+
+    @NotEmpty(message = "O sexo do paciente não foi informado!")
     private String sexo;
-    @NotNull(message = "Contato não pode está nulo.")
-    @NotEmpty(message = "Contato não pode está nulo.")
-    private String contato;
-    @NotNull(message = "Endereço não pode está nulo.")
-    @NotEmpty(message = "Endereço não pode está nulo.")
+
+    @NotEmpty(message = "O contato do paciente não foi informado!")
+        private String contato;
+@NotNull(message = "O endereço do paciente não foi informado!")
     private Endereco endereco;
 
 }

@@ -1,6 +1,7 @@
 package com.vacinas.ap2.controller;
 import com.vacinas.ap2.entity.Endereco;
 import com.vacinas.ap2.entity.Paciente;
+import com.vacinas.ap2.exceptions.CPFException;
 import com.vacinas.ap2.service.PacienteService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,12 +23,11 @@ public class PacienteController {
     PacienteService pacienteService;
 
     @PostMapping("/vacinas/inserir")
-    public ResponseEntity<?> inserir(@RequestBody @Valid Paciente paciente){
-        /*if(pacienteService.verificarPaciente(paciente)){//Se o paciente já existe retorna um Bad Request
-            return ResponseEntity.badRequest().build();
-        }else{//Caso contrario ele ira inserir um novo usuario
-    }*/
-            pacienteService.inserir(paciente);
+    public ResponseEntity inserir(@RequestBody @Valid Paciente paciente){
+        if(pacienteService.verificarPaciente(paciente)){//Se o paciente já existe retorna um Bad Request
+            throw  new CPFException("CPF repétido");
+        }
+        pacienteService.inserir(paciente);
 
         return ResponseEntity.ok(paciente);
     }

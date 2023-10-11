@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
@@ -22,17 +23,17 @@ public class PacienteController {
     @Autowired
     PacienteService pacienteService;
 
-    @PostMapping("/vacinas/inserir")
+    @PostMapping("/pacientes/inserir")
     public ResponseEntity inserir(@RequestBody @Valid Paciente paciente){
         if(pacienteService.verificarPaciente(paciente)){//Se o paciente já existe retorna um Bad Request
-            throw  new CPFException("CPF repétido");
+            throw  new CPFException(null);
         }
         pacienteService.inserir(paciente);
 
-        return ResponseEntity.ok(paciente);
+        return ResponseEntity.status(HttpStatus.CREATED).body(paciente);
     }
-    @GetMapping("/vacinas")
+    @GetMapping("/pacientes")
     public ResponseEntity<List<Paciente>> obterTodos(){
-        return ResponseEntity.ok(pacienteService.obterTodos());
+        return ResponseEntity.status(200).body(pacienteService.obterTodos());
     }
 }

@@ -18,8 +18,8 @@ import java.util.List;
 
 
 @ControllerAdvice
-public class ApiArgumentException extends ResponseEntityExceptionHandler {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ApiArgumentException.class);
+public class ArgumentException extends ResponseEntityExceptionHandler {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ArgumentException.class);
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request){
     List<Mensagem> message = new ArrayList<>();

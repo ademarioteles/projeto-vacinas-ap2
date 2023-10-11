@@ -1,6 +1,7 @@
 package com.vacinas.ap2.service;
 
 import com.vacinas.ap2.entity.Paciente;
+import com.vacinas.ap2.exceptions.CPFException;
 import com.vacinas.ap2.repository.PacienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

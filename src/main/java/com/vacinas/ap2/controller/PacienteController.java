@@ -3,7 +3,7 @@ package com.vacinas.ap2.controller;
 import com.vacinas.ap2.entity.Endereco;
 import com.vacinas.ap2.entity.Paciente;
 import com.vacinas.ap2.exceptions.CPFException;
-import com.vacinas.ap2.service.PacienteService;
+import com.vacinas.ap2.service.PacienteServiceImpl;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,7 +22,7 @@ import java.util.List;
 @Validated
 public class PacienteController {
     @Autowired
-    PacienteService pacienteService;
+    PacienteServiceImpl pacienteService;
 
     @PostMapping("/pacientes/inserir")
     public ResponseEntity inserir(@RequestBody @Valid Paciente paciente) {
@@ -37,5 +37,9 @@ public class PacienteController {
     @GetMapping("/pacientes")
     public ResponseEntity<List<Paciente>> obterTodos() {
         return ResponseEntity.status(200).body(pacienteService.obterTodos());
+    }
+    @GetMapping("/pacientes/{id}")
+    public ResponseEntity<Paciente> obterPorId(@PathVariable String id) {
+        return ResponseEntity.status(200).body(pacienteService.obterPorId(id));
     }
 }

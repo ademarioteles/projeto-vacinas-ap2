@@ -1,4 +1,5 @@
 package com.vacinas.ap2.controller;
+
 import com.vacinas.ap2.entity.Endereco;
 import com.vacinas.ap2.entity.Paciente;
 import com.vacinas.ap2.exceptions.CPFException;
@@ -24,16 +25,17 @@ public class PacienteController {
     PacienteService pacienteService;
 
     @PostMapping("/pacientes/inserir")
-    public ResponseEntity inserir(@RequestBody @Valid Paciente paciente){
-        if(pacienteService.verificarPaciente(paciente)){//Se o paciente já existe retorna um Bad Request
-            throw  new CPFException(null);
+    public ResponseEntity inserir(@RequestBody @Valid Paciente paciente) {
+        if (pacienteService.verificarPaciente(paciente)) {//Se o paciente já existe retorna um Bad Request
+            throw new CPFException(null);
         }
         pacienteService.inserir(paciente);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(paciente);
     }
+
     @GetMapping("/pacientes")
-    public ResponseEntity<List<Paciente>> obterTodos(){
+    public ResponseEntity<List<Paciente>> obterTodos() {
         return ResponseEntity.status(200).body(pacienteService.obterTodos());
     }
 }

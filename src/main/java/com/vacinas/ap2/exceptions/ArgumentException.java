@@ -20,13 +20,14 @@ import java.util.List;
 @ControllerAdvice
 public class ArgumentException extends ResponseEntityExceptionHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(ArgumentException.class);
+
     @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request){
-    List<Mensagem> message = new ArrayList<>();
-    for(ObjectError error:ex.getBindingResult().getAllErrors()){
-        message.add(new Mensagem(error.getDefaultMessage()));
-        LOGGER.info("Tratamento de Exceção MethodArgumentNotValidException: " + error.getDefaultMessage());
-    }
-        return handleExceptionInternal(ex, message,headers,HttpStatus.BAD_REQUEST,request);
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        List<Mensagem> message = new ArrayList<>();
+        for (ObjectError error : ex.getBindingResult().getAllErrors()) {
+            message.add(new Mensagem(error.getDefaultMessage()));
+            LOGGER.info("Tratamento de Exceção MethodArgumentNotValidException: " + error.getDefaultMessage());
+        }
+        return handleExceptionInternal(ex, message, headers, HttpStatus.BAD_REQUEST, request);
     }
 }

@@ -3,25 +3,28 @@ package com.vacinas.ap2.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 @Data
+@RequiredArgsConstructor
 public class Endereco {
-    @NotNull(message = "Logradouro não pode está nulo.")
-    @NotEmpty(message = "Logradouro não pode está nulo.")
+    @NotEmpty(message = "O logradouro em endereço não pode está em branco!")
+    @NotNull(message = "O logradouro em endereço não pode ser nulo!")
     private String logradouro;
-    @NotNull(message = "Número não pode está nulo.")
+    @NotNull(message = "O número em endereço não pode está nulo!")
     private Integer numero;
-    @NotNull(message = "Bairro não pode está nulo.")
-    @NotEmpty(message = "Bairro não pode está nulo.")
+    @NotNull(message = "O bairro em endereço não pode está nulo.")
+    @NotEmpty(message = "O bairro em endereço não pode está em branco!")
     private String bairro;
-    @NotNull(message = "Município não pode está nulo.")
-    @NotEmpty(message = "Município não pode está nulo.")
+    @NotNull(message = "O município em endereço não pode está nulo!")
+    @NotEmpty(message = "O município em endereço não pode está em branco!")
     private String municipio;
-    @NotNull(message = "Estado não pode está nulo.")
-    @NotEmpty(message = "Estado não pode está nulo.")
+
+    @NotNull(message = "O estado em endereço não pode está nulo!")
+    @NotEmpty(message = "O estado em endereço não pode está em branco!")
     private String estado;
 
 }

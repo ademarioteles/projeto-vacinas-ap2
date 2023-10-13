@@ -4,7 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 
 @Data
@@ -30,7 +32,10 @@ public class Paciente {
 
     @NotEmpty(message = "O contato do paciente não foi informado!")
         private String contato;
-    @NotEmpty(message = "O endereço do paciente não foi informado!")
+  //  @NotEmpty(message = "O endereço do paciente não foi informado!")
+
+   @Valid
+   @NotNull(message = "O Endereço não pode ser nulo!")
     private Endereco endereco;
 
 }

@@ -14,7 +14,7 @@ public class CPFEncontredException extends ResponseEntityExceptionHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(CPFEncontredException.class);
 
     @ExceptionHandler(CPFException.class)
-    public ResponseEntity handleException(CPFException e){
+    public ResponseEntity handleException(CPFException e) {
         Mensagem mensagem = new Mensagem("O CPF informado já encontra-se cadastrado em nossa base de dados!");
         LOGGER.info("Tratamentação de exceção CPFException: " + mensagem);
         return new ResponseEntity(mensagem, HttpStatus.BAD_REQUEST);

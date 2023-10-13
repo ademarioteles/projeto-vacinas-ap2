@@ -1,8 +1,10 @@
 package com.vacinas.ap2.controller;
 
 import com.vacinas.ap2.entity.Endereco;
+import com.vacinas.ap2.entity.Mensagem;
 import com.vacinas.ap2.entity.Paciente;
 import com.vacinas.ap2.exceptions.CPFException;
+import com.vacinas.ap2.exceptions.PacientNotFoundException;
 import com.vacinas.ap2.service.PacienteServiceImpl;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,7 +29,7 @@ public class PacienteController {
     @PostMapping("/pacientes/inserir")
     public ResponseEntity inserir(@RequestBody @Valid Paciente paciente) {
         if (pacienteService.verificarPaciente(paciente)) {//Se o paciente já existe retorna um Bad Request
-            throw new CPFException(null);
+            throw new CPFException("Cpf existente");
         }
         pacienteService.inserir(paciente);
 
@@ -36,10 +38,17 @@ public class PacienteController {
 
     @GetMapping("/pacientes")
     public ResponseEntity<List<Paciente>> obterTodos() {
+        if (pacienteService.obterTodos().isEmpty()) {
+            throw new PacientNotFoundException("Paciente não encontrado!");
+        }
         return ResponseEntity.status(200).body(pacienteService.obterTodos());
     }
+
     @GetMapping("/pacientes/{id}")
-    public ResponseEntity<Paciente> obterPorId(@PathVariable String id) {
+    public ResponseEntity<Object> obterPorId(@PathVariable String id) {
+        if (pacienteService.obterPorId(id) == null) {
+            throw new PacientNotFoundException("Paciente não encontrado!");
+        }
         return ResponseEntity.status(200).body(pacienteService.obterPorId(id));
     }
 }

@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @ControllerAdvice
-public class CPFEncontredException extends ResponseEntityExceptionHandler {
-    private static final Logger LOGGER = LoggerFactory.getLogger(CPFEncontredException.class);
+public class GenericHandlerException extends ResponseEntityExceptionHandler {
+    private static final Logger LOGGER = LoggerFactory.getLogger(GenericHandlerException.class);
 
     @ExceptionHandler(CPFException.class)
     public ResponseEntity handleException(CPFException e) {
@@ -19,5 +19,10 @@ public class CPFEncontredException extends ResponseEntityExceptionHandler {
         LOGGER.info("Tratamentação de exceção CPFException: " + mensagem);
         return new ResponseEntity(mensagem, HttpStatus.BAD_REQUEST);
     }
-
+    @ExceptionHandler(PacientNotFoundException.class)
+    public ResponseEntity handleException(PacientNotFoundException e) {
+        Mensagem mensagem = new Mensagem("Paciente(s) não encontrado(s)");
+        LOGGER.info("Tratamentação de exceção PacientNotFoundException: " + mensagem);
+        return new ResponseEntity(mensagem, HttpStatus.NOT_FOUND);
+    }
 }

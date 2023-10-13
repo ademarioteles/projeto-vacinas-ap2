@@ -15,7 +15,6 @@ public class PacienteServiceImpl implements PacienteService {
 
     @Override
     public List<Paciente> obterTodos() {
-
         return pacienteRepository.findAll();
     }
 

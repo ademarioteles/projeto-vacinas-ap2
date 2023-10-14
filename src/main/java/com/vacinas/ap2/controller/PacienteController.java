@@ -1,20 +1,14 @@
 package com.vacinas.ap2.controller;
 
-import com.vacinas.ap2.entity.Endereco;
-import com.vacinas.ap2.entity.Mensagem;
+
 import com.vacinas.ap2.entity.Paciente;
 import com.vacinas.ap2.exceptions.CPFException;
 import com.vacinas.ap2.exceptions.PacientNotFoundException;
 import com.vacinas.ap2.service.PacienteServiceImpl;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -45,7 +39,7 @@ public class PacienteController {
     }
 
     @GetMapping("/pacientes/{id}")
-    public ResponseEntity<Object> obterPorId(@PathVariable String id) {
+    public ResponseEntity<Paciente> obterPorId(@PathVariable String id) {
         if (pacienteService.obterPorId(id) == null) {
             throw new PacientNotFoundException("Paciente não encontrado!");
         }

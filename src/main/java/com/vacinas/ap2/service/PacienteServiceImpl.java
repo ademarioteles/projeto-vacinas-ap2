@@ -20,7 +20,7 @@ public class PacienteServiceImpl implements PacienteService {
 
     @Override
     public Paciente obterPorId(String id) {
-        for (Paciente pacient : obterTodos()) {
+        for (Paciente pacient : obterTodos()) {//Como o id é uma string o metodo de busca tem que ser diferente do findById
             if (pacient.getId().equals(id)) {
                 return pacient;
             }

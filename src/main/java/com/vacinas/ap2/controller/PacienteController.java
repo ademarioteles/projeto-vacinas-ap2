@@ -1,12 +1,14 @@
 package com.vacinas.ap2.controller;
 
 
+import com.vacinas.ap2.entity.Mensagem;
 import com.vacinas.ap2.entity.Paciente;
 import com.vacinas.ap2.exceptions.CPFException;
 import com.vacinas.ap2.exceptions.PacientNotFoundException;
 import com.vacinas.ap2.service.PacienteServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -20,14 +22,16 @@ public class PacienteController {
     @Autowired
     PacienteServiceImpl pacienteService;
 
-    @PostMapping("/pacientes/inserir")
+    @PostMapping("/pacientes/cadastrar")
     public ResponseEntity inserir(@RequestBody @Valid Paciente paciente) {
         if (pacienteService.verificarPaciente(paciente)) {//Se o paciente já existe retorna um Bad Request
             throw new CPFException("Cpf existente");
         }
         pacienteService.inserir(paciente);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(paciente);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new Mensagem("Paciente cadastrado com sucesso!"));
     }
 
     @GetMapping("/pacientes")

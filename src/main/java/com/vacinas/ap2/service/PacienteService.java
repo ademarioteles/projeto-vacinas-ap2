@@ -15,4 +15,6 @@ public interface PacienteService {
     void editar(Paciente paciente);
     void editarParcial(Paciente paciente);
     boolean verificarPaciente(Paciente paciente);
+
+    Paciente CompareEdite(Paciente pacientU, Paciente pacientD);
 }

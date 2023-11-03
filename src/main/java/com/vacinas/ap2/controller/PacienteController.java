@@ -12,11 +12,14 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
+import java.lang.reflect.Field;
 import javax.validation.Valid;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static ch.qos.logback.core.joran.util.beans.BeanUtil.isGetter;
 
 @RestController
 @Validated
@@ -42,14 +45,13 @@ public class PacienteController {
 @PatchMapping("/pacientes")
 public ResponseEntity editarParcial(@RequestBody  Paciente pacienteEditar){
     Paciente pacienteEncontrado = pacienteService.obterPorId(pacienteEditar.getId());
-    Map<String, Object> mapPaciente = new HashMap<>();
 
     if (pacienteEditar == null) {
         throw new PacientNotFoundException("Paciente não encontrado!");
     }else if(pacienteEncontrado== null){
         throw new PacientNotFoundException("Paciente não encontrado, informe o Id!");
     }
-
+    pacienteEditar = pacienteService.CompareEdite(pacienteEditar,pacienteEncontrado);
 
     if(!pacienteEditar.equals(pacienteEncontrado)) {
         pacienteService.editar(pacienteEditar);

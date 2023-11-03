@@ -53,4 +53,31 @@ public class PacienteServiceImpl implements PacienteService {
         return false;
     }
 
+    @Override
+    public Paciente CompareEdite(Paciente pacientU, Paciente pacientD) {
+
+        if (pacientU.getNome() == null) {
+            pacientU.setNome(pacientD.getNome());
+        }if (pacientU.getSobrenome() == null) {
+            pacientU.setSobrenome(pacientD.getSobrenome());
+        }  if (pacientU.getDataNascimento() == null) {
+            pacientU.setDataNascimento(pacientD.getDataNascimento());
+        } if (pacientU.getSexo() == null) {
+            pacientU.setSexo(pacientD.getSexo());
+        } if (pacientU.getContato() == null) {
+            pacientU.setContato(pacientD.getContato());
+        } if (pacientU.getEndereco().getLogradouro() == null) {
+            pacientU.getEndereco().setLogradouro((pacientD.getEndereco().getLogradouro()));
+        } if (pacientU.getEndereco().getNumero() == null) {
+            pacientU.getEndereco().setNumero((pacientD.getEndereco().getNumero()));
+        } if (pacientU.getEndereco().getBairro() == null) {
+            pacientU.getEndereco().setBairro((pacientD.getEndereco().getBairro()));
+        } if (pacientU.getEndereco().getMunicipio() == null) {
+            pacientU.getEndereco().setMunicipio((pacientD.getEndereco().getMunicipio()));
+        } if (pacientU.getEndereco().getEstado() == null) {
+            pacientU.getEndereco().setEstado((pacientD.getEndereco().getEstado()));
+        }
+        return pacientU;
+
+    }
 }

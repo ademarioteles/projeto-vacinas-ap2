@@ -34,6 +34,16 @@ public class PacienteServiceImpl implements PacienteService {
     }
 
     @Override
+    public void editar(Paciente pacienteEditar) {
+        pacienteRepository.save(pacienteEditar);
+    }
+
+    @Override
+    public void editarParcial(Paciente pacienteEditar) {
+
+    }
+
+    @Override
     public boolean verificarPaciente(Paciente paciente) {
         for (Paciente pacient : obterTodos()) {
             if (paciente.getCpf().equals(pacient.getCpf())) {

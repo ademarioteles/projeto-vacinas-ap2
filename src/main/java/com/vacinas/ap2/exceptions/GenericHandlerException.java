@@ -22,13 +22,13 @@ public class GenericHandlerException extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(CPFException.class)
     protected ResponseEntity handleException(CPFException e) {
-        Mensagem mensagem = new Mensagem("O CPF informado já encontra-se cadastrado em nossa base de dados!");
-        LOGGER.info("Tratamentação de exceção CPFException: " + mensagem);
+        Mensagem mensagem = new Mensagem(e.getMessage());
+        LOGGER.info("Tratamentação de exceção CPFException: " + e.getMessage());
         return new ResponseEntity(mensagem, HttpStatus.BAD_REQUEST);
     }
     @ExceptionHandler(PacientNotFoundException.class)
     protected ResponseEntity handleException(PacientNotFoundException e) {
-        Mensagem mensagem = new Mensagem("Paciente(s) não encontrado(s)");
+        Mensagem mensagem = new Mensagem(e.getMessage());
         LOGGER.info("Tratamentação de exceção PacientNotFoundException: " + mensagem);
         return new ResponseEntity(mensagem, HttpStatus.NOT_FOUND);
     }

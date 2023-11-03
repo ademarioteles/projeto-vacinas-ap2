@@ -14,7 +14,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @Validated
@@ -22,22 +24,54 @@ public class PacienteController {
     @Autowired
     PacienteServiceImpl pacienteService;
 
+    @PutMapping("/pacientes")
+    public ResponseEntity editar(@RequestBody @Valid Paciente pacienteEditar){
+        Paciente pacienteEncontrado = pacienteService.obterPorId(pacienteEditar.getId());
+
+        if (pacienteEditar == null) {
+            throw new PacientNotFoundException("Paciente não encontrado!");
+        }else if(pacienteEncontrado== null){
+            throw new PacientNotFoundException("Paciente não encontrado, informe o Id!");
+        }
+
+        if(!pacienteEditar.equals(pacienteEncontrado)) {
+            pacienteService.editar(pacienteEditar);
+        }
+        return  ResponseEntity.status(200).contentType(MediaType.APPLICATION_JSON).body(pacienteService.obterPorId(pacienteEditar.getId()));
+    }
+@PatchMapping("/pacientes")
+public ResponseEntity editarParcial(@RequestBody  Paciente pacienteEditar){
+    Paciente pacienteEncontrado = pacienteService.obterPorId(pacienteEditar.getId());
+    Map<String, Object> mapPaciente = new HashMap<>();
+
+    if (pacienteEditar == null) {
+        throw new PacientNotFoundException("Paciente não encontrado!");
+    }else if(pacienteEncontrado== null){
+        throw new PacientNotFoundException("Paciente não encontrado, informe o Id!");
+    }
+
+
+    if(!pacienteEditar.equals(pacienteEncontrado)) {
+        pacienteService.editar(pacienteEditar);
+    }
+    return  ResponseEntity.status(200).contentType(MediaType.APPLICATION_JSON).body(pacienteService.obterPorId(pacienteEditar.getId()));
+}
     @PostMapping("/pacientes/cadastrar")
     public ResponseEntity inserir(@RequestBody @Valid Paciente paciente) {
         if (pacienteService.verificarPaciente(paciente)) {//Se o paciente já existe retorna um Bad Request
-            throw new CPFException("Cpf existente");
+            throw new CPFException("Cpf inexistente na base!");
         }
         pacienteService.inserir(paciente);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(new Mensagem("Paciente cadastrado com sucesso!"));
+                .body(pacienteService.obterPorId(paciente.getId()));
     }
 
     @GetMapping("/pacientes")
     public ResponseEntity<List<Paciente>> obterTodos() {
         if (pacienteService.obterTodos().isEmpty()) {
-            throw new PacientNotFoundException("Paciente não encontrado!");
+            throw new PacientNotFoundException("Paciente(s) não encontrado(s)!");
         }
         return ResponseEntity.status(200).body(pacienteService.obterTodos());
     }

@@ -11,5 +11,8 @@ public interface PacienteService {
     List<Paciente> obterTodos();
     Paciente obterPorId(String id);
     void inserir(Paciente paciente);
+
+    void editar(Paciente paciente);
+    void editarParcial(Paciente paciente);
     boolean verificarPaciente(Paciente paciente);
 }

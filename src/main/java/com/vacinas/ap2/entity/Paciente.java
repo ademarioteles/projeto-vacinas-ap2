@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-
+import java.util.Objects;
 
 
 @Data
@@ -41,5 +41,16 @@ public class Paciente {
     @NotNull(message = "O Endereço não pode ser nulo!")
     private Endereco endereco;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Paciente paciente = (Paciente) o;
+        return Objects.equals(nome, paciente.nome) && Objects.equals(sobrenome, paciente.sobrenome) && Objects.equals(cpf, paciente.cpf) && Objects.equals(dataNascimento, paciente.dataNascimento) && Objects.equals(sexo, paciente.sexo) && Objects.equals(contato, paciente.contato) && Objects.equals(endereco, paciente.endereco);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(nome, sobrenome, cpf, dataNascimento, sexo, contato, endereco);
+    }
 }

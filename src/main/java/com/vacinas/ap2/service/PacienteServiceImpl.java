@@ -2,6 +2,7 @@ package com.vacinas.ap2.service;
 
 import com.vacinas.ap2.entity.Paciente;
 import com.vacinas.ap2.exceptions.CPFException;
+import com.vacinas.ap2.exceptions.PacientNotFoundException;
 import com.vacinas.ap2.repository.PacienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,9 @@ public class PacienteServiceImpl implements PacienteService {
 
     @Override
     public List<Paciente> obterTodos() {
+        if(pacienteRepository.findAll().isEmpty() || pacienteRepository.findAll() == null){
+            throw new PacientNotFoundException("Paciente(s) não encontrado(s)!");
+        }
         return pacienteRepository.findAll();
     }
 
@@ -25,22 +29,51 @@ public class PacienteServiceImpl implements PacienteService {
                 return pacient;
             }
         }
+       if(id == null || id != null){
+           throw  new PacientNotFoundException("Paciente não encontrado!");
+       }
         return null;
     }
 
     @Override
     public void inserir(Paciente paciente) {
+        if (this.verificarPaciente(paciente)) {//Se o paciente já existe retorna um Bad Request
+            throw new CPFException("Cpf inexistente na base!");
+        }
         pacienteRepository.insert(paciente);
     }
 
     @Override
     public void editar(Paciente pacienteEditar) {
-        pacienteRepository.save(pacienteEditar);
+
+        Paciente pacienteEncontrado = this.obterPorId(pacienteEditar.getId());
+
+        if (pacienteEditar == null) {
+            throw new PacientNotFoundException("Paciente não encontrado!");
+        }else if(pacienteEncontrado== null){
+            throw new PacientNotFoundException("Paciente não encontrado, informe o Id!");
+        }
+
+        if(!pacienteEditar.equals(pacienteEncontrado)) {
+            pacienteRepository.save(pacienteEditar);
+        }
     }
 
     @Override
-    public void editarParcial(Paciente pacienteEditar) {
+    public void editarParcial(Paciente paciente) {
+        Paciente pacienteEncontrado = this.obterPorId(paciente.getId());
 
+        if (paciente == null) {
+            throw new PacientNotFoundException("Paciente não encontrado!");
+        }else if(pacienteEncontrado== null){
+            throw new PacientNotFoundException("Paciente não encontrado, informe o Id!");
+        }
+
+        paciente = this.CompareEdite(paciente,pacienteEncontrado);
+
+        if(!paciente.equals(pacienteEncontrado)) {
+            pacienteRepository.save(paciente);
+        }
     }
 
     @Override
@@ -66,7 +99,9 @@ public class PacienteServiceImpl implements PacienteService {
             pacientU.setSexo(pacientD.getSexo());
         } if (pacientU.getContato() == null) {
             pacientU.setContato(pacientD.getContato());
-        } if (pacientU.getEndereco().getLogradouro() == null) {
+        }if(pacientU.getEndereco() == null){
+            pacientU.setEndereco(pacientD.getEndereco());
+        }if (pacientU.getEndereco().getLogradouro() == null) {
             pacientU.getEndereco().setLogradouro((pacientD.getEndereco().getLogradouro()));
         } if (pacientU.getEndereco().getNumero() == null) {
             pacientU.getEndereco().setNumero((pacientD.getEndereco().getNumero()));

@@ -12,12 +12,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import java.lang.reflect.Field;
 import javax.validation.Valid;
-import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static ch.qos.logback.core.joran.util.beans.BeanUtil.isGetter;
 
@@ -29,40 +25,19 @@ public class PacienteController {
 
     @PutMapping("/pacientes")
     public ResponseEntity editar(@RequestBody @Valid Paciente pacienteEditar){
-        Paciente pacienteEncontrado = pacienteService.obterPorId(pacienteEditar.getId());
 
-        if (pacienteEditar == null) {
-            throw new PacientNotFoundException("Paciente não encontrado!");
-        }else if(pacienteEncontrado== null){
-            throw new PacientNotFoundException("Paciente não encontrado, informe o Id!");
-        }
+        pacienteService.editar(pacienteEditar);
 
-        if(!pacienteEditar.equals(pacienteEncontrado)) {
-            pacienteService.editar(pacienteEditar);
-        }
         return  ResponseEntity.status(200).contentType(MediaType.APPLICATION_JSON).body(pacienteService.obterPorId(pacienteEditar.getId()));
     }
 @PatchMapping("/pacientes")
 public ResponseEntity editarParcial(@RequestBody  Paciente pacienteEditar){
-    Paciente pacienteEncontrado = pacienteService.obterPorId(pacienteEditar.getId());
-
-    if (pacienteEditar == null) {
-        throw new PacientNotFoundException("Paciente não encontrado!");
-    }else if(pacienteEncontrado== null){
-        throw new PacientNotFoundException("Paciente não encontrado, informe o Id!");
-    }
-    pacienteEditar = pacienteService.CompareEdite(pacienteEditar,pacienteEncontrado);
-
-    if(!pacienteEditar.equals(pacienteEncontrado)) {
-        pacienteService.editar(pacienteEditar);
-    }
+    pacienteService.editarParcial(pacienteEditar);
     return  ResponseEntity.status(200).contentType(MediaType.APPLICATION_JSON).body(pacienteService.obterPorId(pacienteEditar.getId()));
 }
     @PostMapping("/pacientes/cadastrar")
     public ResponseEntity inserir(@RequestBody @Valid Paciente paciente) {
-        if (pacienteService.verificarPaciente(paciente)) {//Se o paciente já existe retorna um Bad Request
-            throw new CPFException("Cpf inexistente na base!");
-        }
+
         pacienteService.inserir(paciente);
 
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -72,17 +47,14 @@ public ResponseEntity editarParcial(@RequestBody  Paciente pacienteEditar){
 
     @GetMapping("/pacientes")
     public ResponseEntity<List<Paciente>> obterTodos() {
-        if (pacienteService.obterTodos().isEmpty()) {
-            throw new PacientNotFoundException("Paciente(s) não encontrado(s)!");
-        }
+
         return ResponseEntity.status(200).body(pacienteService.obterTodos());
     }
 
     @GetMapping("/pacientes/{id}")
     public ResponseEntity<Paciente> obterPorId(@PathVariable String id) {
-        if (pacienteService.obterPorId(id) == null) {
-            throw new PacientNotFoundException("Paciente não encontrado!");
-        }
+
         return ResponseEntity.status(200).body(pacienteService.obterPorId(id));
     }
+
 }

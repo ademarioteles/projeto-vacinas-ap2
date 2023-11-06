@@ -14,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,40 +42,59 @@ public class PacienteControlerTest {
     void carregarPaciente(){
         pacientes = new ArrayList<>();
         pacient = new Paciente();
+        pacient.setId("fasdas5d5");
         pacient.setNome("teste isCpfFoundException");
         pacient.setSobrenome("barbosa");
+        pacient.setCpf("5665656566");
         pacient.setDataNascimento("21/01/1991");
         pacient.setSexo("masculino");
         pacient.setContato("(74)99485365");
         pacient.setEndereco( new Endereco("av. 7 de setembro",24,"2 de julho","salvador","BA"));
         pacientes.add(pacient);
+        when(pacienteServiceImpl.obterPorId("fasdas5d5")).thenReturn(pacient);
         when(pacienteServiceImpl.obterTodos()).thenReturn(pacientes);
-        when(pacienteServiceImpl.obterPorId(pacient.getId())).thenReturn(pacient);
-
     }
     @Test
-    void obterTodosController(){
+    void obterTodosSucessoController(){
         Assertions.assertEquals(ResponseEntity.status(200).body(pacientes), pacienteControllerInject.obterTodos());
 
     }
     @Test
-    void obterPorIdController(){
+    void obterPorIdSucessoController(){
         Assertions.assertEquals( ResponseEntity.status(200).body(pacient), pacienteControllerInject.obterPorId(pacient.getId()));
 
     }
     @Test
-    void insercaoPacienteController(){//Retorna umaa exceção por meio validation, caso algum dos campos não forem preenchidos
+    void insercaoPacienteErrorController(){//Retorna umaa exceção por meio validation, caso algum dos campos não forem preenchidos
         pacient.setCpf("");
         Assertions.assertThrows(ConstraintViolationException.class, () -> pacienteController.inserir(pacient));
     }
+
     @Test
-    void cpfExistenteController(){//Retorna uma exceção personalizada em caso do usuario cadastrar um cpf ja existente
-        when(pacienteServiceImpl.verificarPaciente(pacient)).thenReturn(true);// Atribui que o usuario ja existe no banco de dados e ser usado no controller do inserir paciente
-        Assertions.assertThrows(CPFException.class, () -> pacienteControllerInject.inserir(pacient));//Nesse momento de inserção o usuario já existe
+    void editarErrorController(){//Retorna umaa exceção por meio validation, caso algum dos campos não forem preenchidos
+        pacient.setCpf("");
+        Assertions.assertThrows(ConstraintViolationException.class, () -> pacienteController.editar(pacient));
     }
     @Test
-    void exiteUsuarioController(){//Retorna uma exceção personalizada ao buscar um usuario não existente
-        Assertions.assertThrows(PacientNotFoundException.class, () -> pacienteControllerInject.obterPorId("abcde123456"));
+    void editarParcialErrorController(){//Retorna umaa exceção por não encontrar o usuario
+        pacient.setId("");
+        Assertions.assertThrows(PacientNotFoundException.class, () -> pacienteController.editarParcial(pacient));
+    }
+    @Test
+    void editarParcialSucessoController(){//Mantem as informações já existente e edita apenas o necessario
+    pacient.setDataNascimento("21/01/1995");
+    pacient.setSexo("feminino");
+    pacient.setContato(null);// um dos campos pode ser nulo, menos o id.
+
+    Assertions.assertEquals(ResponseEntity.status(200)
+            .contentType(MediaType.APPLICATION_JSON).body(pacienteServiceImpl.obterPorId(pacient.getId())), pacienteControllerInject.editarParcial(pacient));
+    }
+
+    @Test
+    void editarSucessoController(){// Todos os campos devem ser informados. O resto das informações é pega pelo @Before
+        pacient.setNome("novo nome");
+        Assertions.assertEquals(ResponseEntity.status(200).contentType(MediaType.APPLICATION_JSON).body(pacienteServiceImpl.obterPorId(pacient.getId())), pacienteControllerInject.editar(pacient));
+
     }
 
 }

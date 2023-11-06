@@ -24,21 +24,23 @@ public class PacienteServiceImpl implements PacienteService {
 
     @Override
     public Paciente obterPorId(String id) {
+        Paciente pacienteEncontrado = null;
         for (Paciente pacient : obterTodos()) {//Como o id é uma string o metodo de busca tem que ser diferente do findById
             if (pacient.getId().equals(id)) {
-                return pacient;
+                pacienteEncontrado = pacient;
+                break;
             }
         }
-       if(id == null || id != null){
+       if(pacienteEncontrado == null){
            throw  new PacientNotFoundException("Paciente não encontrado!");
        }
-        return null;
+        return pacienteEncontrado;
     }
 
     @Override
     public void inserir(Paciente paciente) {
         if (this.verificarPaciente(paciente)) {//Se o paciente já existe retorna um Bad Request
-            throw new CPFException("Cpf inexistente na base!");
+            throw new CPFException("Cpf existente na base!");
         }
         pacienteRepository.insert(paciente);
     }
@@ -63,7 +65,7 @@ public class PacienteServiceImpl implements PacienteService {
     public void editarParcial(Paciente paciente) {
         Paciente pacienteEncontrado = this.obterPorId(paciente.getId());
 
-        if (paciente == null) {
+    if (paciente == null) {
             throw new PacientNotFoundException("Paciente não encontrado!");
         }else if(pacienteEncontrado== null){
             throw new PacientNotFoundException("Paciente não encontrado, informe o Id!");

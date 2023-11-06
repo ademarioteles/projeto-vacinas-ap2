@@ -20,7 +20,6 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.Mockito.when;
-
 @SpringBootTest
 public class PacienteServiceTest {
     @Mock

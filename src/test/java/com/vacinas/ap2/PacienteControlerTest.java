@@ -2,6 +2,7 @@ package com.vacinas.ap2;
 
 import com.vacinas.ap2.controller.PacienteController;
 import com.vacinas.ap2.entity.Endereco;
+import com.vacinas.ap2.entity.Mensagem;
 import com.vacinas.ap2.entity.Paciente;
 import com.vacinas.ap2.exceptions.CPFException;
 import com.vacinas.ap2.exceptions.PacientNotFoundException;
@@ -19,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.print.attribute.standard.Media;
 import javax.validation.ConstraintViolationException;
 
 import java.util.ArrayList;
@@ -56,12 +58,12 @@ public class PacienteControlerTest {
     }
     @Test
     void obterTodosSucessoController(){
-        Assertions.assertEquals(ResponseEntity.status(200).body(pacientes), pacienteControllerInject.obterTodos());
+        Assertions.assertEquals(ResponseEntity.status(200).contentType(MediaType.APPLICATION_JSON).body(pacientes), pacienteControllerInject.obterTodos());
 
     }
     @Test
     void obterPorIdSucessoController(){
-        Assertions.assertEquals( ResponseEntity.status(200).body(pacient), pacienteControllerInject.obterPorId(pacient.getId()));
+        Assertions.assertEquals( ResponseEntity.status(200).contentType(MediaType.APPLICATION_JSON).body(pacient), pacienteControllerInject.obterPorId(pacient.getId()));
 
     }
     @Test
@@ -70,6 +72,21 @@ public class PacienteControlerTest {
         Assertions.assertThrows(ConstraintViolationException.class, () -> pacienteController.inserir(pacient));
     }
 
+    @Test
+    void editarSucessoController(){
+        Paciente novoPaciente = new Paciente();
+        novoPaciente.setId("fasdas5d5");
+        novoPaciente.setNome("Novo valor");
+        novoPaciente.setSobrenome("alterado");
+        novoPaciente.setCpf("5665656567");
+        novoPaciente.setDataNascimento("21/01/1993");
+        novoPaciente.setSexo("feminino");
+        novoPaciente.setContato("(74)99485365");
+        novoPaciente.setEndereco( new Endereco("av. 7 de setembro",24,"2 de julho","salvador","BA"));
+        pacienteControllerInject.editar(novoPaciente);
+        Assertions.assertEquals(pacienteControllerInject.obterPorId(pacient.getId()),pacienteControllerInject.obterPorId(novoPaciente.getId()));
+
+    }
     @Test
     void editarErrorController(){//Retorna umaa exceção por meio validation, caso algum dos campos não forem preenchidos
         pacient.setCpf("");
@@ -87,14 +104,15 @@ public class PacienteControlerTest {
     pacient.setContato(null);// um dos campos pode ser nulo, menos o id.
 
     Assertions.assertEquals(ResponseEntity.status(200)
-            .contentType(MediaType.APPLICATION_JSON).body(pacienteServiceImpl.obterPorId(pacient.getId())), pacienteControllerInject.editarParcial(pacient));
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(pacienteServiceImpl.obterPorId(pacient.getId())), pacienteControllerInject.editarParcial(pacient));
     }
-
     @Test
-    void editarSucessoController(){// Todos os campos devem ser informados. O resto das informações é pega pelo @Before
-        pacient.setNome("novo nome");
-        Assertions.assertEquals(ResponseEntity.status(200).contentType(MediaType.APPLICATION_JSON).body(pacienteServiceImpl.obterPorId(pacient.getId())), pacienteControllerInject.editar(pacient));
-
+    void removerSucessoController(){
+        Assertions.assertEquals(ResponseEntity.status(200)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new Mensagem("Paciente deletado com sucesso!")),pacienteControllerInject.deletar(pacient.getId()));
     }
+
 
 }

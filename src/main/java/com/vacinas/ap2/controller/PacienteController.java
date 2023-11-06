@@ -1,6 +1,7 @@
 package com.vacinas.ap2.controller;
 
 
+import com.vacinas.ap2.entity.Mensagem;
 import com.vacinas.ap2.entity.Paciente;
 import com.vacinas.ap2.service.PacienteServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,11 +32,23 @@ public class PacienteController {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(pacienteService.obterPorId(pacienteEditar.getId()));
     }
+    @PatchMapping("/pacientes/{id}")
+    public ResponseEntity editarParcialPorId(@PathVariable String id, @RequestBody  Paciente pacienteEditar){
+        pacienteService.editarParcialPorId(id,pacienteEditar);
+        return  ResponseEntity.status(200)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(pacienteService.obterPorId(id));
+    }
+    @PutMapping("/pacientes/{id}")
+    public ResponseEntity editarPorId(@PathVariable String id, @RequestBody  Paciente pacienteEditar){
+        pacienteService.editarPorId(id,pacienteEditar);
+        return  ResponseEntity.status(200)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(pacienteService.obterPorId(id));
+    }
     @PostMapping("/pacientes/cadastrar")
     public ResponseEntity inserir(@RequestBody @Valid Paciente paciente) {
-
         pacienteService.inserir(paciente);
-
         return  ResponseEntity.status(HttpStatus.CREATED)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(pacienteService.obterPorId(paciente.getId()));
@@ -44,13 +57,30 @@ public class PacienteController {
     @GetMapping("/pacientes")
     public ResponseEntity<List<Paciente>> obterTodos() {
         return  ResponseEntity.status(200)
+                .contentType(MediaType.APPLICATION_JSON)
                 .body(pacienteService.obterTodos());
     }
 
     @GetMapping("/pacientes/{id}")
     public ResponseEntity<Paciente> obterPorId(@PathVariable String id){
         return  ResponseEntity.status(200)
+                .contentType(MediaType.APPLICATION_JSON)
                 .body(pacienteService.obterPorId(id));
+    }
+
+    @DeleteMapping("/pacientes")
+    public ResponseEntity deletar(@RequestBody Paciente pacienteEditar){
+        pacienteService.deletePorId(pacienteEditar.getId());
+        return ResponseEntity.status(200)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new Mensagem("Paciente deletado com sucesso!"));
+    }
+    @DeleteMapping("/pacientes/{id}")
+    public ResponseEntity deletarPorId(@PathVariable String id){
+        pacienteService.deletePorId(id);
+        return ResponseEntity.status(200)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new Mensagem("Paciente deletado com sucesso!"));
     }
 
 }

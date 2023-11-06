@@ -14,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -97,4 +98,13 @@ public class PacienteServiceTest {
         when(pacienteRepository.findAll()).thenReturn(listaVazia);
         Assertions.assertThrows(PacientNotFoundException.class,() ->pacienteServiceImpl.obterTodos());
     }
+    @Test
+    void removerPorIdErrorService(){
+        Assertions.assertThrows(PacientNotFoundException.class,() -> pacienteServiceImpl.deletePorId("IdIncorreto"));
+    }
+    @Test
+    void removerPorIdNuloErrorService(){
+        Assertions.assertThrows(PacientNotFoundException.class,() -> pacienteServiceImpl.deletePorId(null));
+    }
+
 }

@@ -16,9 +16,6 @@ public class PacienteServiceImpl implements PacienteService {
 
     @Override
     public List<Paciente> obterTodos() {
-        if(pacienteRepository.findAll().isEmpty() || pacienteRepository.findAll() == null){
-            throw new PacientNotFoundException("Paciente(s) não encontrado(s)!");
-        }
         return pacienteRepository.findAll();
     }
 
@@ -31,7 +28,7 @@ public class PacienteServiceImpl implements PacienteService {
                 break;
             }
         }
-       if(pacienteEncontrado == null){
+       if(pacienteEncontrado == null || obterTodos().isEmpty() || obterTodos() == null){
            throw  new PacientNotFoundException("Paciente não encontrado!");
        }
         return pacienteEncontrado;
@@ -39,10 +36,22 @@ public class PacienteServiceImpl implements PacienteService {
 
     @Override
     public void inserir(Paciente paciente) {
-        if (this.verificarPaciente(paciente)) {//Se o paciente já existe retorna um Bad Request
-            throw new CPFException("Cpf existente na base!");
+        if (verificarPaciente(paciente)) {//Se o paciente já existe retorna um Bad Request
+            throw new CPFException("Cpf já cadastrado na base!");
         }
         pacienteRepository.insert(paciente);
+    }
+
+    @Override
+    public void editarPorId(String id,Paciente paciente) {
+        paciente.setId(id);
+        this.editar(paciente);
+    }
+
+    @Override
+    public void editarParcialPorId(String id,Paciente paciente) {
+        paciente.setId(id);
+        this.editarParcial(paciente);
     }
 
     @Override
@@ -52,7 +61,7 @@ public class PacienteServiceImpl implements PacienteService {
 
         if (pacienteEditar == null) {
             throw new PacientNotFoundException("Paciente não encontrado!");
-        }else if(pacienteEncontrado== null){
+        }else if(pacienteEncontrado == null){
             throw new PacientNotFoundException("Paciente não encontrado, informe o Id!");
         }
 
@@ -80,12 +89,21 @@ public class PacienteServiceImpl implements PacienteService {
 
     @Override
     public boolean verificarPaciente(Paciente paciente) {
-        for (Paciente pacient : obterTodos()) {
-            if (paciente.getCpf().equals(pacient.getCpf())) {
-                return true;
-            }
-        }
+           for (Paciente pacient : this.obterTodos()) {
+               if (paciente.getCpf().equals(pacient.getCpf())) {
+                   return true;
+               }
+           }
         return false;
+    }
+
+    @Override
+    public void deletePorId(String id) {
+        if(id == null){
+            throw new PacientNotFoundException("Paciente não encontrado, informe o Id");
+        }
+       Paciente pacienteRemover =  this.obterPorId(id);
+       pacienteRepository.deleteById(pacienteRemover.getId());
     }
 
     @Override

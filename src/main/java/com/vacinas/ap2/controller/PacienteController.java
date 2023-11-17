@@ -91,8 +91,8 @@ public class PacienteController {
     @GetMapping("/sanhok")
     public ResponseEntity sanhok(){
         return ResponseEntity.status(200)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(new Mensagem("API de Gerenciamento de Vacinação desenvolvida pela equipe Sanhok para atender aos requisitos do projeto \"Programação Web 2 - Oficial 2"));
+                .contentType(MediaType.TEXT_PLAIN)
+                .body("API de Gerenciamento de Vacinação desenvolvida pela equipe Sanhok para atender aos requisitos do projeto 'Programação Web 2 - Oficial 2'");
     }
 
 }

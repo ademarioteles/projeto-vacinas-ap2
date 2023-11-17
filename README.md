@@ -60,7 +60,7 @@ https://wb-api-vacinas-v2.azurewebsites.net/sanhok
 Descrição: Retorna uma mensagem simples indicando que a API está em funcionamento.
 
 ```bash
-{"status": "API de Gerenciamento de Vacinação em Desenvolvimento"}
+"API de Gerenciamento de Vacinação desenvolvida pela equipe Sanhok para atender aos requisitos do projeto 'Programação Web 2 - Oficial 2' "
 ```
 
 ## ⚙️ Configuração
@@ -104,22 +104,19 @@ A API oferece vários endpoints para criar, ler, atualizar e excluir registros d
  *Este endpoint é responsável por fornecer funcionalidades relacionadas ao gerenciamento de informações sobre pacientes. Aqui estão algumas ações comuns que podem ser associadas a este endpoint:*
    - **GET /pacientes**: Retorna a lista de todos os pacientes cadastrados.
    - **GET /pacientes/{id}**: Retorna os detalhes de um paciente específico com base no ID.
-   - **POST /pacientes**: Cadastra um novo paciente com base nos dados fornecidos no corpo da solicitação.
+   - **POST /pacientes/cadastrar**: Cadastra um novo paciente,por meio de um corpo (body).
    - **PUT /pacientes/{id}**: Atualiza as informações de um paciente existente com base no ID.
+   - **PATCH /pacientes/{id}**: Atualiza as informações de um paciente, por meio de um id, existente de forma parcial.
+   - **PATCH /pacientes**: Atualiza as informações de um paciente,por meio de um corpo (body), existente de forma parcial.
    - **DELETE /pacientes/{id}**: Exclui um paciente específico com base no ID.
-  
-  
+   - **DELETE /pacientes/todos**: Excluir todos os pacientes.
+
+
   [/pacientes/cadastrar](#pacientes/cadastrar): 
 
 *Este endpoint é especificamente dedicado à ação de cadastrar um novo paciente. Geralmente, ele aceitará dados do paciente no corpo da solicitação usando o método POST. Por exemplo:*
 
   - **POST /pacientes/cadastrar:** Aceita dados do paciente no corpo da solicitação e cadastra um novo paciente.
-
-[/pacientes/todos](#pacientes/todos): 
-  
-  *Este endpoint é destinado a recuperar a lista completa de todos os pacientes cadastrados. O método associado a este endpoint geralmente será o GET. Exemplo:*
-
- - **GET /pacientes/todos:** Retorna a lista completa de todos os pacientes cadastrados no sistema.
 
 <!-- Consulte a documentação dos endpoints para obter detalhes sobre como usar cada um deles. -->
 

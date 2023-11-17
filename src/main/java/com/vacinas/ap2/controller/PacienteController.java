@@ -1,9 +1,8 @@
 package com.vacinas.ap2.controller;
 
-
 import com.vacinas.ap2.entity.Mensagem;
 import com.vacinas.ap2.entity.Paciente;
-import com.vacinas.ap2.service.PacienteServiceImpl;
+import com.vacinas.ap2.service.PacienteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -16,7 +15,7 @@ import java.util.List;
 @Validated
 public class PacienteController {
     @Autowired
-    PacienteServiceImpl pacienteService;
+    PacienteService pacienteService;
 
     @PutMapping("/pacientes")
     public ResponseEntity editar(@RequestBody @Valid Paciente pacienteEditar){
@@ -81,6 +80,19 @@ public class PacienteController {
         return ResponseEntity.status(200)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(new Mensagem("Paciente deletado com sucesso!"));
+    }
+    @DeleteMapping("/pacientes/todos")
+    public ResponseEntity deletarPorId(){
+        pacienteService.deletarTodos();
+        return ResponseEntity.status(200)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new Mensagem("Todos os pacientes foram deletados!"));
+    }
+    @GetMapping("/sanhok")
+    public ResponseEntity sanhok(){
+        return ResponseEntity.status(200)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new Mensagem("API de Gerenciamento de Pacientes em Desenvolvimento."));
     }
 
 }

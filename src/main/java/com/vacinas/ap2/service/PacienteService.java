@@ -12,10 +12,10 @@ public interface PacienteService {
     void inserir(Paciente paciente);
     void editarPorId(String id, Paciente paciente);
     void editarParcialPorId(String id,Paciente paciente);
-
     void editar(Paciente paciente);
     void editarParcial(Paciente paciente);
     boolean verificarPaciente(Paciente paciente);
     void deletePorId(String id);
+    void deletarTodos();
     Paciente CompareEdite(Paciente pacientU, Paciente pacientD);
 }

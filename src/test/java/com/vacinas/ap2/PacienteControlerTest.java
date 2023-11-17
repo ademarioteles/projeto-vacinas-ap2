@@ -111,7 +111,15 @@ public class PacienteControlerTest {
     void removerSucessoController(){
         Assertions.assertEquals(ResponseEntity.status(200)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(new Mensagem("Paciente deletado com sucesso!")),pacienteControllerInject.deletar(pacient.getId()));
+                .body(new Mensagem("Paciente deletado com sucesso!")),pacienteControllerInject.deletar(pacient));
+    }
+    @Test
+
+    void testeSanhok(){
+        Assertions.assertEquals(ResponseEntity.status(200)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new Mensagem("API de Gerenciamento de Pacientes em Desenvolvimento.")),pacienteControllerInject.sanhok());
+
     }
 
 

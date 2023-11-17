@@ -2,8 +2,11 @@ package com.vacinas.ap2.service;
 
 import com.vacinas.ap2.entity.Paciente;
 import com.vacinas.ap2.exceptions.CPFException;
+import com.vacinas.ap2.exceptions.GenericHandlerException;
 import com.vacinas.ap2.exceptions.PacientNotFoundException;
 import com.vacinas.ap2.repository.PacienteRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +14,7 @@ import java.util.List;
 
 @Service
 public class PacienteServiceImpl implements PacienteService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(GenericHandlerException.class);
     @Autowired
     PacienteRepository pacienteRepository;
 
@@ -31,6 +35,7 @@ public class PacienteServiceImpl implements PacienteService {
        if(pacienteEncontrado == null || obterTodos().isEmpty() || obterTodos() == null){
            throw  new PacientNotFoundException("Paciente não encontrado!");
        }
+        LOGGER.info("Paciente com id " + id + " encontrado!");
         return pacienteEncontrado;
     }
 
@@ -40,18 +45,23 @@ public class PacienteServiceImpl implements PacienteService {
             throw new CPFException("Cpf já cadastrado na base!");
         }
         pacienteRepository.insert(paciente);
+        LOGGER.info("Paciente com id " + paciente.getId() + " inserido com sucesso!");
+
     }
 
     @Override
     public void editarPorId(String id,Paciente paciente) {
         paciente.setId(id);
         this.editar(paciente);
+        LOGGER.info("Paciente com id " + id + " editado com sucesso!");
+
     }
 
     @Override
     public void editarParcialPorId(String id,Paciente paciente) {
         paciente.setId(id);
         this.editarParcial(paciente);
+        LOGGER.info("Paciente com id " + id + " editado com sucesso!");
     }
 
     @Override
@@ -67,7 +77,9 @@ public class PacienteServiceImpl implements PacienteService {
 
         if(!pacienteEditar.equals(pacienteEncontrado)) {
             pacienteRepository.save(pacienteEditar);
+            LOGGER.info("Paciente com id " + pacienteEditar.getId() + " editado com sucesso!");
         }
+
     }
 
     @Override
@@ -84,6 +96,8 @@ public class PacienteServiceImpl implements PacienteService {
 
         if(!paciente.equals(pacienteEncontrado)) {
             pacienteRepository.save(paciente);
+            LOGGER.info("Paciente com id " + paciente.getId() + " editado parcialmente com sucesso!");
+
         }
     }
 
@@ -91,9 +105,11 @@ public class PacienteServiceImpl implements PacienteService {
     public boolean verificarPaciente(Paciente paciente) {
            for (Paciente pacient : this.obterTodos()) {
                if (paciente.getCpf().equals(pacient.getCpf())) {
+                   LOGGER.info("Paciente com id " + paciente.getId() + " já existe em nossa base!");
                    return true;
                }
            }
+
         return false;
     }
 
@@ -104,6 +120,17 @@ public class PacienteServiceImpl implements PacienteService {
         }
        Paciente pacienteRemover =  this.obterPorId(id);
        pacienteRepository.deleteById(pacienteRemover.getId());
+        LOGGER.info("Paciente com id " + pacienteRemover.getId() + " foi excluído com sucesso!");
+    }
+
+    @Override
+    public void deletarTodos() {
+        if(this.obterTodos().isEmpty()){
+            throw new PacientNotFoundException("Não há pacientes a serem deletados!");
+        }
+        pacienteRepository.deleteAll();
+        LOGGER.info("Todos os pacientes foram deletados!");
+
     }
 
     @Override

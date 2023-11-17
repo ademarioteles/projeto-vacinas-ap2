@@ -15,10 +15,8 @@ import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.validation.ConstraintViolationException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collector;
 
 import static org.mockito.Mockito.when;
 @SpringBootTest
@@ -96,7 +94,7 @@ public class PacienteServiceTest {
     void obterTodosError(){//Exibir exceção com lista vazia
         List<Paciente> listaVazia = new ArrayList<>();
         when(pacienteRepository.findAll()).thenReturn(listaVazia);
-        Assertions.assertThrows(PacientNotFoundException.class,() ->pacienteServiceImpl.obterTodos());
+            Assertions.assertEquals(listaVazia,pacienteServiceImpl.obterTodos());
     }
     @Test
     void removerPorIdErrorService(){

@@ -19,6 +19,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import javax.print.attribute.standard.Media;
 import javax.validation.ConstraintViolationException;
@@ -48,7 +49,7 @@ public class PacienteControlerTest {
         pacient.setNome("teste isCpfFoundException");
         pacient.setSobrenome("barbosa");
         pacient.setCpf("5665656566");
-        pacient.setDataNascimento("21/01/1991");
+        pacient.setDataNascimento("1991-01-21");
         pacient.setSexo("masculino");
         pacient.setContato("(74)99485365");
         pacient.setEndereco( new Endereco("av. 7 de setembro",24,"2 de julho","salvador","BA"));
@@ -79,7 +80,7 @@ public class PacienteControlerTest {
         novoPaciente.setNome("Novo valor");
         novoPaciente.setSobrenome("alterado");
         novoPaciente.setCpf("5665656567");
-        novoPaciente.setDataNascimento("21/01/1993");
+        novoPaciente.setDataNascimento("1993-01-21");
         novoPaciente.setSexo("feminino");
         novoPaciente.setContato("(74)99485365");
         novoPaciente.setEndereco( new Endereco("av. 7 de setembro",24,"2 de julho","salvador","BA"));
@@ -99,7 +100,7 @@ public class PacienteControlerTest {
     }
     @Test
     void editarParcialSucessoController(){//Mantem as informações já existente e edita apenas o necessario
-    pacient.setDataNascimento("21/01/1995");
+    pacient.setDataNascimento("1995-01-21");
     pacient.setSexo("feminino");
     pacient.setContato(null);// um dos campos pode ser nulo, menos o id.
 
@@ -121,6 +122,5 @@ public class PacienteControlerTest {
                 .body("API de Gerenciamento de Vacinação desenvolvida pela equipe Sanhok para atender aos requisitos do projeto 'Programação Web 2 - Oficial 2'"),pacienteControllerInject.sanhok());
 
     }
-
 
 }

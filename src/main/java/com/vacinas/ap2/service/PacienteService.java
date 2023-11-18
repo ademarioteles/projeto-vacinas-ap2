@@ -18,4 +18,5 @@ public interface PacienteService {
     void deletePorId(String id);
     void deletarTodos();
     Paciente CompareEdite(Paciente pacientU, Paciente pacientD);
+    void inject();
 }

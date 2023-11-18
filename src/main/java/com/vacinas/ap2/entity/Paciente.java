@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.util.Objects;
 
 
@@ -28,6 +29,7 @@ public class Paciente {
     private String cpf;
 
     @NotEmpty(message = "A data de nascimento do paciente não foi informado!")
+    @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$",message = "A data deve ter um formato igual a 2023-07-29")
     private String dataNascimento;
 
     @NotEmpty(message = "O sexo do paciente não foi informado!")

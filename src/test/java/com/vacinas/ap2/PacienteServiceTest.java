@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import javax.validation.ConstraintViolationException;
 import java.util.*;
@@ -37,7 +38,7 @@ public class PacienteServiceTest {
         pacient.setNome("teste isCpfFoundException");
         pacient.setSobrenome("barbosa");
         pacient.setCpf("12345678910");
-        pacient.setDataNascimento("21/01/1991");
+        pacient.setDataNascimento("1991-01-21");
         pacient.setSexo("masculino");
         pacient.setContato("(74)99485365");
         pacient.setEndereco( new Endereco("av. 7 de setembro",24,"2 de julho","salvador","BA"));

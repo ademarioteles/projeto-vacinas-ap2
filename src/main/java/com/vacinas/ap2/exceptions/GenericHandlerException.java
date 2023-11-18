@@ -42,4 +42,10 @@ public class GenericHandlerException extends ResponseEntityExceptionHandler {
         }
         return handleExceptionInternal(ex, message, headers, HttpStatus.BAD_REQUEST, request);
     }
+    @ExceptionHandler(Exception.class)
+    protected ResponseEntity handleInternalServerError(Exception e) {
+        LOGGER.error("Erro interno do servidor: " + e.getMessage(), e);
+        Mensagem mensagem = new Mensagem("Desculpe, ocorreu um erro interno no servidor. Nossa equipe de TI foram notificados e estão trabalhando para resolver o problema.");
+        return new ResponseEntity(mensagem, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }

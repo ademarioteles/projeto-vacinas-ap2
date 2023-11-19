@@ -52,7 +52,7 @@ public class PacienteController {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(pacienteService.obterPorId(paciente.getId()));
     }
-    @PostMapping("/pacientes/inject")
+    @PostMapping("/pacientes/inject")//Responsavel por injectar valores de pacientes
     public ResponseEntity<List<Paciente>> inject() {
         pacienteService.inject();
         return  ResponseEntity.status(200)
@@ -96,7 +96,7 @@ public class PacienteController {
                 .body(new Mensagem("Todos os pacientes foram deletados!"));
     }
     @GetMapping("/sanhok")
-    public ResponseEntity sanhok(){
+    public ResponseEntity sanhok(){//apenas exibira uma mensagem do em TEXT_PLAIN sobre o trabalho
         return ResponseEntity.status(200)
                 .contentType(MediaType.TEXT_PLAIN)
                 .body("API de Gerenciamento de Vacinação desenvolvida pela equipe Sanhok para atender aos requisitos do projeto 'Programação Web 2 - Oficial 2'");

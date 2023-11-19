@@ -137,7 +137,7 @@ public class PacienteServiceImpl implements PacienteService {
     }
 
     @Override
-    public Paciente CompareEdite(Paciente pacientU, Paciente pacientD) {
+    public Paciente CompareEdite(Paciente pacientU, Paciente pacientD) {//Preenche atributos vazios com objetos já existente no banco
 
         if (pacientU.getNome() == null) {
             pacientU.setNome(pacientD.getNome());

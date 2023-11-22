@@ -2,6 +2,8 @@ package com.vacinas.ap2.service;
 
 import com.vacinas.ap2.entity.Endereco;
 import com.vacinas.ap2.entity.Paciente;
+import com.vacinas.ap2.enums.Estados;
+import com.vacinas.ap2.enums.Sexo;
 import com.vacinas.ap2.exceptions.CPFException;
 import com.vacinas.ap2.exceptions.GenericHandlerException;
 import com.vacinas.ap2.exceptions.PacientNotFoundException;
@@ -11,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -145,7 +148,9 @@ public class PacienteServiceImpl implements PacienteService {
             pacientU.setSobrenome(pacientD.getSobrenome());
         }  if (pacientU.getDataNascimento() == null) {
             pacientU.setDataNascimento(pacientD.getDataNascimento());
-        } if (pacientU.getSexo() == null) {
+        }  if (pacientU.getCpf() == null) {
+            pacientU.setCpf(pacientD.getCpf());
+        }if (pacientU.getSexo() == null) {
             pacientU.setSexo(pacientD.getSexo());
         } if (pacientU.getContato() == null) {
             pacientU.setContato(pacientD.getContato());
@@ -169,15 +174,15 @@ public class PacienteServiceImpl implements PacienteService {
     @Override
     public void inject() {
         Paciente pacient = new Paciente("6556b65c2ba8c674fd37b804","Pablo","Santos","12345678917",
-                "1995-01-21","Masculino","(74)99485365",new Endereco("av. 7 de setembro",65,"2 de julho","Salvador","BA"));
+                "1995-01-21", Sexo.Masculino,"(74)99485365",new Endereco("av. 7 de setembro",65,"2 de julho","Salvador", Estados.BA));
         Paciente pacientUm = new Paciente("6556b65c2ba8c674fd37b803","Priscila","Fernandes","12345678914",
-                "1994-07-21","Feminino","(75)98485365",new Endereco("Av. luiz tarquinio",201,"Centro","Lauro de Freitas","BA"));
+                "1994-07-21",Sexo.Feminino,"(75)98485365",new Endereco("Av. luiz tarquinio",201,"Centro","Lauro de Freitas",Estados.BA));
         Paciente pacientDois = new Paciente("6556b65c2ba8c674fd37b703","Henrique","Souto","12345674914",
-                "1994-07-21","Masculino","(81)98485465",new Endereco("Av. Olivia palito",74,"Centro","Caruaru","PE"));
+                "1994-07-21",Sexo.Masculino,"(81)98485465",new Endereco("Av. Olivia palito",74,"Centro","Caruaru",Estados.PE));
         Paciente pacientTres = new Paciente("6556b65c2ba8c674fd37b712","Washinton","Flores","12345674935",
-                "1994-07-21","Masculino","(11)97485465",new Endereco("Av. Tiete",74,"São Paulo","São Paulo","SP"));
+                "1994-07-21",Sexo.Masculino,"(11)97485465",new Endereco("Av. Tiete",74,"São Paulo","São Paulo",Estados.SP));
         Paciente pacientQuatro = new Paciente("6556b65c2ba8c674fd37b988","Felipe","Marques","15845672935",
-                "1992-07-21","Masculino","(21)97465469",new Endereco("Av. Brasil",23,"Rio de Janeiro","Rio de Janeiro","RJ"));
+                "1992-07-21",Sexo.Feminino,"(21)97465469",new Endereco("Av. Brasil",23,"Rio de Janeiro","Rio de Janeiro",Estados.RJ));
         List<Paciente> pacientesInjectados = new ArrayList<>(Arrays.asList(pacient,pacientUm,pacientDois,pacientTres,pacientQuatro));
         pacienteRepository.saveAll(pacientesInjectados);
     }

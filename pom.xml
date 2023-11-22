@@ -45,13 +45,13 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <version>5.9.3</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+			<version>5.9.3</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -83,28 +83,28 @@
 				<groupId>com.microsoft.azure</groupId>
 				<artifactId>azure-webapp-maven-plugin</artifactId>
 				<version>2.11.0</version>
-			    <configuration>
-			        <schemaVersion>v2</schemaVersion>
-			        <resourceGroup>ap2-1700091318055-rg</resourceGroup>
-			        <appName>ap2-1700091318055</appName>
-			        <pricingTier>P1v2</pricingTier>
-			        <region>centralus</region>
-			        <runtime>
-			            <os>Linux</os>
-			            <javaVersion>Java 17</javaVersion>
-			            <webContainer>Java SE</webContainer>
-			        </runtime>
-			        <deployment>
-			            <resources>
-			                <resource>
-			                    <directory>${project.basedir}/target</directory>
-			                    <includes>
-			                        <include>*.jar</include>
-			                    </includes>
-			                </resource>
-			            </resources>
-			        </deployment>
-			    </configuration>
+				<configuration>
+					<schemaVersion>v2</schemaVersion>
+					<resourceGroup>ap2-1700091318055-rg</resourceGroup>
+					<appName>ap2-1700091318055</appName>
+					<pricingTier>P1v2</pricingTier>
+					<region>centralus</region>
+					<runtime>
+						<os>Linux</os>
+						<javaVersion>Java 17</javaVersion>
+						<webContainer>Java SE</webContainer>
+					</runtime>
+					<deployment>
+						<resources>
+							<resource>
+								<directory>${project.basedir}/target</directory>
+								<includes>
+									<include>*.jar</include>
+								</includes>
+							</resource>
+						</resources>
+					</deployment>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

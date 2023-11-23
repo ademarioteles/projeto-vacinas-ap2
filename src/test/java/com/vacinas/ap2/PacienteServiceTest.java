@@ -42,9 +42,9 @@ public class PacienteServiceTest {
         pacient.setSobrenome("barbosa");
         pacient.setCpf("807.457.620-50");
         pacient.setDataNascimento("1991-01-21");
-        pacient.setSexo(Sexo.feminino);
+        pacient.setSexo(Sexo.feminino.toString());
         pacient.setContato("(74)99485365");
-        pacient.setEndereco( new Endereco("av. 7 de setembro",24,"2 de julho","salvador", Estados.BA));
+        pacient.setEndereco( new Endereco("av. 7 de setembro",24,"2 de julho","salvador", Estados.BA.toString()));
         pacientes.add(pacient);
         when(pacienteRepository.findAll()).thenReturn(pacientes);
     }

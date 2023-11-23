@@ -46,13 +46,10 @@ public class PacienteServiceImpl implements PacienteService {
 
     @Override
     public void inserir(Paciente paciente) {
-
         if (cpfVerificador(paciente)) {//Se o paciente já existe retorna um Bad Request
             throw new CPFException("Cpf já cadastrado ou formato não permitido!");
         }
-        if (dataVerificador(paciente)) {
-            throw new DateFormatException("Data com formato ou informação não permitida!");
-        }
+        testeCampos(paciente);
         pacienteRepository.insert(paciente);
         LOGGER.info("Paciente com id " + paciente.getId() + " inserido com sucesso!");
 
@@ -77,9 +74,7 @@ public class PacienteServiceImpl implements PacienteService {
     public void editar(Paciente pacienteEditar) {
         Paciente pacienteEncontrado = this.obterPorId(pacienteEditar.getId());
 
-        if (pacienteEditar == null) {
-            throw new PacientNotFoundException("Paciente não encontrado!");
-        } else if (pacienteEncontrado == null) {
+        if (pacienteEncontrado == null) {
             throw new PacientNotFoundException("Paciente não encontrado, informe o identificador!");
         }
 
@@ -145,6 +140,7 @@ public class PacienteServiceImpl implements PacienteService {
     @Override
     public Paciente verificarPacienteTodos(Paciente pacientU, Paciente pacientD) {//Preenche atributos vazios com objetos já existente no banco
         pacientU.setId(pacientD.getId());
+
         if (pacientU.getNome() == null || pacientU.getNome() == "") {
             pacientU.setNome(pacientD.getNome());
         }
@@ -161,17 +157,18 @@ public class PacienteServiceImpl implements PacienteService {
 
         if (pacientU.getCpf() == null || pacientU.getCpf() == "") {
             pacientU.setCpf(pacientD.getCpf());
-        } else if ((cpfVerificador(pacientU) && !pacientU.getCpf().equals(pacientD.getCpf()) )|| !validadorCpf(pacientU.getCpf())) {
+        } else if ((cpfVerificador(pacientU) && !pacientU.getCpf().equals(pacientD.getCpf())) || !validadorCpf(pacientU.getCpf())) {
             throw new CPFException("Cpf já cadastrado ou formato não permitido!");
         }
 
         if (pacientU.getSexo() == null) {
             pacientU.setSexo(pacientD.getSexo());
         }
+        pacientU.setSexo(sexoValidador(pacientU));
 
         if (pacientU.getContato() == null || pacientU.getContato() == "") {
             pacientU.setContato(pacientD.getContato());
-        } else if (!validadorTelefone(pacientU.getContato())) {
+        } else if (!telefoneValidador(pacientU)) {
             throw new ContactIncorrectException("O contato telefonico permitido é (11)99456-7890");
         }
 
@@ -185,6 +182,10 @@ public class PacienteServiceImpl implements PacienteService {
         if (pacientU.getEndereco().getNumero() == null) {
             pacientU.getEndereco().setNumero((pacientD.getEndereco().getNumero()));
         }
+        if(!numeroValidador(pacientU)){
+            throw new NumberIncorrectException("O numero é necessario ser positivo!");
+        }
+
         if (pacientU.getEndereco().getBairro() == null || pacientU.getEndereco().getBairro() == "") {
             pacientU.getEndereco().setBairro((pacientD.getEndereco().getBairro()));
         }
@@ -194,6 +195,7 @@ public class PacienteServiceImpl implements PacienteService {
         if (pacientU.getEndereco().getEstado() == null || pacientU.getEndereco().getBairro() == "") {
             pacientU.getEndereco().setEstado((pacientD.getEndereco().getEstado()));
         }
+        pacientU.getEndereco().setEstado(estadoValidador(pacientU));
 
         return pacientU;
 
@@ -232,7 +234,8 @@ public class PacienteServiceImpl implements PacienteService {
     }
 
     @Override
-    public boolean validadorTelefone(String phone) {
+    public boolean telefoneValidador(Paciente paciente) {
+        String phone = paciente.getContato();
         String regex = "^(?:\\+55)?\\s?(?:\\(?\\d{2}\\)?\\s?\\d{4,5}-?\\d{4})$";
         return Pattern.matches(regex, phone);
     }
@@ -243,8 +246,6 @@ public class PacienteServiceImpl implements PacienteService {
             if (FormatDate.parse(FormatDate.format(new Date())).getTime() < FormatDate.parse(paciente.getDataNascimento()).getTime()) {
                 return false;
             } else if (!paciente.getDataNascimento().equals(FormatDate.format(FormatDate.parse(paciente.getDataNascimento())))) {
-                System.out.println(paciente.getDataNascimento());
-                System.out.println(FormatDate.format(FormatDate.parse(paciente.getDataNascimento())));
                 return false;
             }
         } catch (ParseException parseException) {
@@ -255,17 +256,61 @@ public class PacienteServiceImpl implements PacienteService {
     }
 
     @Override
+    public String sexoValidador(Paciente paciente) {
+        try {
+            return Sexo.valueOf(paciente.getSexo().toLowerCase()).toString();
+        } catch (IllegalArgumentException illegal) {
+            illegal.getMessage();
+            throw new SexoNotAllowedException("O sexo não foi definido corretamente");
+        }
+    }
+
+    @Override
+    public String estadoValidador(Paciente paciente) {
+        try {
+            return Estados.valueOf(paciente.getEndereco().getEstado().toUpperCase()).toString();
+        } catch (IllegalArgumentException illegal) {
+            illegal.getMessage();
+            throw new StateNotAllowedException("O estado não foi definido corretamente");
+        }
+    }
+
+    @Override
+    public boolean numeroValidador(Paciente paciente) {
+        String numero = String.valueOf(paciente.getEndereco().getNumero());
+        String regex = "^[1-9]\\d*$";
+        return Pattern.matches(regex, numero);
+    }
+
+    @Override
+    public void testeCampos(Paciente paciente) {
+        paciente.getEndereco().setEstado(estadoValidador(paciente));
+        if (!numeroValidador(paciente)) {// se o formato do numero estiver não estiver positivo dara uma exceção
+            throw new NumberIncorrectException("O numero deve ser positivo!");
+        }
+        if (cpfVerificador(paciente) ) {//Se o paciente já existe retorna um Bad Request
+            throw new CPFException("Cpf já cadastrado ou formato não permitido!");
+        }
+        if (dataVerificador(paciente)) {
+            throw new DateFormatException("Data com formato ou informação não permitida!");
+        }
+        if (!telefoneValidador(paciente)) {
+            throw new ContactIncorrectException("O contato telefonico permitido é (11)99456-7890");
+        }
+    }
+
+    @Override
     public void inject() {
         Paciente pacient = new Paciente("6556b65c2ba8c674fd37b804", "Pablo", "Santos", "601.439.530-01",
-                "1995-01-21", Sexo.masculino, "(11)99994-5679", new Endereco("av. 7 de setembro", 65, "2 de julho", "Salvador", Estados.BA));
+                "1995-01-21", Sexo.masculino.toString(), "(11)99994-5679", new Endereco("av. 7 de setembro", 65, "2 de julho", "Salvador", Estados.BA.toString()));
         Paciente pacientUm = new Paciente("6556b65c2ba8c674fd37b803", "Priscila", "Fernandes", "353.056.010-37",
-                "1994-07-21", Sexo.feminino, "(11)99995-5679", new Endereco("Av. luiz tarquinio", 201, "Centro", "Lauro de Freitas", Estados.BA));
+                "1994-07-21", Sexo.feminino.toString(), "(11)99995-5679", new Endereco("Av. luiz tarquinio", 201, "Centro", "Lauro de Freitas", Estados.BA.toString()));
         Paciente pacientDois = new Paciente("6556b65c2ba8c674fd37b703", "Henrique", "Souto", "002.984.730-38",
-                "1994-07-21", Sexo.masculino, "(11)99994-5678", new Endereco("Av. Olivia palito", 74, "Centro", "Caruaru", Estados.PE));
+                "1994-07-21", Sexo.masculino.toString(), "(11)99994-5678", new Endereco("Av. Olivia palito", 74, "Centro", "Caruaru", Estados.PE.toString()));
         Paciente pacientTres = new Paciente("6556b65c2ba8c674fd37b712", "Washinton", "Flores", "781.112.010-01",
-                "1994-07-21", Sexo.masculino, "(11)99994-5677", new Endereco("Av. Tiete", 74, "São Paulo", "São Paulo", Estados.SP));
+                "1994-07-21", Sexo.masculino.toString(), "(11)99994-5677", new Endereco("Av. Tiete", 74, "São Paulo", "São Paulo", Estados.SP.toString()));
         Paciente pacientQuatro = new Paciente("6556b65c2ba8c674fd37b988", "Felipe", "Marques", "854.972.870-50",
-                "1992-07-21", Sexo.feminino, "(11)99994-5689", new Endereco("Av. Brasil", 23, "Rio de Janeiro", "Rio de Janeiro", Estados.RJ));
+                "1992-07-21", Sexo.feminino.toString(), "(11)99994-5689", new Endereco("Av. Brasil", 23, "Rio de Janeiro", "Rio de Janeiro", Estados.RJ.toString()));
         List<Paciente> pacientesInjectados = new ArrayList<>(Arrays.asList(pacient, pacientUm, pacientDois, pacientTres, pacientQuatro));
         pacienteRepository.saveAll(pacientesInjectados);
     }

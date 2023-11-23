@@ -1,6 +1,7 @@
 package com.vacinas.ap2.service;
 
 import com.vacinas.ap2.entity.Paciente;
+import com.vacinas.ap2.enums.Sexo;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -22,8 +23,11 @@ public interface PacienteService {
     void deletarTodos();
     Paciente verificarPacienteTodos(Paciente pacientU, Paciente pacientD);
     boolean validadorCpf(String cpf);
-    boolean validadorTelefone(String phone);
+    boolean telefoneValidador(Paciente paciente);
     boolean dataVerificador(Paciente paciente);
-
+    String sexoValidador(Paciente paciente);
+    String estadoValidador(Paciente paciente);
+    boolean numeroValidador(Paciente paciente);
+    void testeCampos(Paciente paciente);
     void inject();
 }

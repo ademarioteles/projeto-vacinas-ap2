@@ -31,7 +31,7 @@ public class Paciente {
     @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$",message = "A data deve ter um formato igual a 2023-07-29")
     private String dataNascimento;
     @NotNull(message = "O sexo do paciente não foi informado!")
-    private Sexo sexo;
+    private String sexo;
 
     @Pattern(regexp = "^\\(?\\d{2}\\)?\\s?\\d{4,5}-\\d{4}$", message = "O contato telefonico permitido é (11)99456-7890")
     private String contato;

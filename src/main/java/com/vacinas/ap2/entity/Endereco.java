@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 @Data
 @AllArgsConstructor
@@ -24,5 +25,5 @@ public class Endereco {
     private String municipio;
 
     @NotNull(message = "O estado em endereço não pode está nulo!")
-    private Estados estado;
+    private String estado;
 }

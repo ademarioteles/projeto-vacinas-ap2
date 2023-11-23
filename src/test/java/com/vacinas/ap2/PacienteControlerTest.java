@@ -52,9 +52,9 @@ public class PacienteControlerTest {
         pacient.setSobrenome("barbosa");
         pacient.setCpf("633.384.430-64");
         pacient.setDataNascimento("1991-01-21");
-        pacient.setSexo(Sexo.masculino);
+        pacient.setSexo(Sexo.masculino.toString());
         pacient.setContato("(74)99485365");
-        pacient.setEndereco( new Endereco("av. 7 de setembro",24,"2 de julho","salvador",Estados.BA));
+        pacient.setEndereco( new Endereco("av. 7 de setembro",24,"2 de julho","salvador",Estados.BA.toString()));
         pacientes.add(pacient);
         when(pacienteServiceImpl.obterPorId("fasdas5d5")).thenReturn(pacient);
         when(pacienteServiceImpl.obterTodos()).thenReturn(pacientes);
@@ -83,9 +83,9 @@ public class PacienteControlerTest {
         novoPaciente.setSobrenome("alterado");
         novoPaciente.setCpf("633.384.430-64");
         novoPaciente.setDataNascimento("1993-01-21");
-        novoPaciente.setSexo(Sexo.feminino);
+        novoPaciente.setSexo(Sexo.feminino.toString());
         novoPaciente.setContato("(74)99485365");
-        novoPaciente.setEndereco( new Endereco("av. 7 de setembro",24,"2 de julho","salvador", Estados.BA));
+        novoPaciente.setEndereco( new Endereco("av. 7 de setembro",24,"2 de julho","salvador", Estados.BA.toString()));
         pacienteControllerInject.editar(novoPaciente);
         Assertions.assertEquals(pacienteControllerInject.obterPorId(pacient.getId()),pacienteControllerInject.obterPorId(novoPaciente.getId()));
 
@@ -103,7 +103,7 @@ public class PacienteControlerTest {
     @Test
     void editarParcialSucessoController(){//Mantem as informações já existente e edita apenas o necessario
     pacient.setDataNascimento("1995-01-21");
-    pacient.setSexo(Sexo.feminino);
+    pacient.setSexo(Sexo.feminino.toString());
     pacient.setContato(null);// um dos campos pode ser nulo, menos o id.
 
     Assertions.assertEquals(ResponseEntity.status(200)

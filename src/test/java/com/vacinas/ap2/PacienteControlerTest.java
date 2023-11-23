@@ -4,6 +4,8 @@ import com.vacinas.ap2.controller.PacienteController;
 import com.vacinas.ap2.entity.Endereco;
 import com.vacinas.ap2.entity.Mensagem;
 import com.vacinas.ap2.entity.Paciente;
+import com.vacinas.ap2.enums.Estados;
+import com.vacinas.ap2.enums.Sexo;
 import com.vacinas.ap2.exceptions.CPFException;
 import com.vacinas.ap2.exceptions.PacientNotFoundException;
 import com.vacinas.ap2.repository.PacienteRepository;
@@ -48,11 +50,11 @@ public class PacienteControlerTest {
         pacient.setId("fasdas5d5");
         pacient.setNome("teste isCpfFoundException");
         pacient.setSobrenome("barbosa");
-        pacient.setCpf("5665656566");
+        pacient.setCpf("633.384.430-64");
         pacient.setDataNascimento("1991-01-21");
-        pacient.setSexo("masculino");
+        pacient.setSexo(Sexo.masculino);
         pacient.setContato("(74)99485365");
-        pacient.setEndereco( new Endereco("av. 7 de setembro",24,"2 de julho","salvador","BA"));
+        pacient.setEndereco( new Endereco("av. 7 de setembro",24,"2 de julho","salvador",Estados.BA));
         pacientes.add(pacient);
         when(pacienteServiceImpl.obterPorId("fasdas5d5")).thenReturn(pacient);
         when(pacienteServiceImpl.obterTodos()).thenReturn(pacientes);
@@ -79,11 +81,11 @@ public class PacienteControlerTest {
         novoPaciente.setId("fasdas5d5");
         novoPaciente.setNome("Novo valor");
         novoPaciente.setSobrenome("alterado");
-        novoPaciente.setCpf("5665656567");
+        novoPaciente.setCpf("633.384.430-64");
         novoPaciente.setDataNascimento("1993-01-21");
-        novoPaciente.setSexo("feminino");
+        novoPaciente.setSexo(Sexo.feminino);
         novoPaciente.setContato("(74)99485365");
-        novoPaciente.setEndereco( new Endereco("av. 7 de setembro",24,"2 de julho","salvador","BA"));
+        novoPaciente.setEndereco( new Endereco("av. 7 de setembro",24,"2 de julho","salvador", Estados.BA));
         pacienteControllerInject.editar(novoPaciente);
         Assertions.assertEquals(pacienteControllerInject.obterPorId(pacient.getId()),pacienteControllerInject.obterPorId(novoPaciente.getId()));
 
@@ -101,7 +103,7 @@ public class PacienteControlerTest {
     @Test
     void editarParcialSucessoController(){//Mantem as informações já existente e edita apenas o necessario
     pacient.setDataNascimento("1995-01-21");
-    pacient.setSexo("feminino");
+    pacient.setSexo(Sexo.feminino);
     pacient.setContato(null);// um dos campos pode ser nulo, menos o id.
 
     Assertions.assertEquals(ResponseEntity.status(200)

@@ -4,23 +4,22 @@ import com.vacinas.ap2.entity.Endereco;
 import com.vacinas.ap2.entity.Paciente;
 import com.vacinas.ap2.enums.Estados;
 import com.vacinas.ap2.enums.Sexo;
-import com.vacinas.ap2.exceptions.CPFException;
-import com.vacinas.ap2.exceptions.GenericHandlerException;
-import com.vacinas.ap2.exceptions.PacientNotFoundException;
+import com.vacinas.ap2.exceptions.*;
 import com.vacinas.ap2.repository.PacienteRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.regex.Pattern;
 
 @Service
 public class PacienteServiceImpl implements PacienteService {
     private static final Logger LOGGER = LoggerFactory.getLogger(GenericHandlerException.class);
+    private static final SimpleDateFormat FormatDate = new SimpleDateFormat("yyyy-MM-dd");
     @Autowired
     PacienteRepository pacienteRepository;
 
@@ -38,33 +37,37 @@ public class PacienteServiceImpl implements PacienteService {
                 break;
             }
         }
-       if(pacienteEncontrado == null || obterTodos().isEmpty() || obterTodos() == null){
-           throw  new PacientNotFoundException("Paciente não encontrado!");
-       }
+        if (pacienteEncontrado == null || obterTodos().isEmpty() || obterTodos() == null) {
+            throw new PacientNotFoundException("Paciente não encontrado!");
+        }
         LOGGER.info("Paciente com id " + id + " encontrado!");
         return pacienteEncontrado;
     }
 
     @Override
     public void inserir(Paciente paciente) {
-        if (verificarPaciente(paciente)) {//Se o paciente já existe retorna um Bad Request
-            throw new CPFException("Cpf já cadastrado na base!");
+
+        if (cpfVerificador(paciente)) {//Se o paciente já existe retorna um Bad Request
+            throw new CPFException("Cpf já cadastrado ou formato não permitido!");
+        }
+        if (dataVerificador(paciente)) {
+            throw new DateFormatException("Data com formato ou informação não permitida!");
         }
         pacienteRepository.insert(paciente);
         LOGGER.info("Paciente com id " + paciente.getId() + " inserido com sucesso!");
 
+
     }
 
     @Override
-    public void editarPorId(String id,Paciente paciente) {
+    public void editarPorId(String id, Paciente paciente) {
         paciente.setId(id);
         this.editar(paciente);
         LOGGER.info("Paciente com id " + id + " editado com sucesso!");
-
     }
 
     @Override
-    public void editarParcialPorId(String id,Paciente paciente) {
+    public void editarParcialPorId(String id, Paciente paciente) {
         paciente.setId(id);
         this.editarParcial(paciente);
         LOGGER.info("Paciente com id " + id + " editado com sucesso!");
@@ -72,16 +75,17 @@ public class PacienteServiceImpl implements PacienteService {
 
     @Override
     public void editar(Paciente pacienteEditar) {
-
         Paciente pacienteEncontrado = this.obterPorId(pacienteEditar.getId());
 
         if (pacienteEditar == null) {
             throw new PacientNotFoundException("Paciente não encontrado!");
-        }else if(pacienteEncontrado == null){
-            throw new PacientNotFoundException("Paciente não encontrado, informe o Id!");
+        } else if (pacienteEncontrado == null) {
+            throw new PacientNotFoundException("Paciente não encontrado, informe o identificador!");
         }
 
-        if(!pacienteEditar.equals(pacienteEncontrado)) {
+        pacienteEditar = verificarPacienteTodos(pacienteEditar, pacienteEncontrado);
+
+        if (!pacienteEditar.equals(pacienteEncontrado)) {
             pacienteRepository.save(pacienteEditar);
             LOGGER.info("Paciente com id " + pacienteEditar.getId() + " editado com sucesso!");
         }
@@ -92,15 +96,15 @@ public class PacienteServiceImpl implements PacienteService {
     public void editarParcial(Paciente paciente) {
         Paciente pacienteEncontrado = this.obterPorId(paciente.getId());
 
-    if (paciente == null) {
+        if (paciente == null) {
             throw new PacientNotFoundException("Paciente não encontrado!");
-        }else if(pacienteEncontrado== null){
-            throw new PacientNotFoundException("Paciente não encontrado, informe o Id!");
+        } else if (pacienteEncontrado == null) {
+            throw new PacientNotFoundException("Paciente não encontrado, informe o identificador!");
         }
 
-        paciente = this.CompareEdite(paciente,pacienteEncontrado);
+        paciente = this.verificarPacienteTodos(paciente, pacienteEncontrado);
 
-        if(!paciente.equals(pacienteEncontrado)) {
+        if (!paciente.equals(pacienteEncontrado)) {
             pacienteRepository.save(paciente);
             LOGGER.info("Paciente com id " + paciente.getId() + " editado parcialmente com sucesso!");
 
@@ -108,30 +112,29 @@ public class PacienteServiceImpl implements PacienteService {
     }
 
     @Override
-    public boolean verificarPaciente(Paciente paciente) {
-           for (Paciente pacient : this.obterTodos()) {
-               if (paciente.getCpf().equals(pacient.getCpf())) {
-                   LOGGER.info("Paciente com id " + paciente.getId() + " já existe em nossa base!");
-                   return true;
-               }
-           }
+    public boolean cpfVerificador(Paciente paciente) {
+        for (Paciente pacient : this.obterTodos()) {
+            if (paciente.getCpf().equals(pacient.getCpf())) {
+                return true;
+            }
+        }
 
         return false;
     }
 
     @Override
     public void deletePorId(String id) {
-        if(id == null){
-            throw new PacientNotFoundException("Paciente não encontrado, informe o Id");
+        if (id == null) {
+            throw new PacientNotFoundException("Paciente não encontrado, informe o identificador!");
         }
-       Paciente pacienteRemover =  this.obterPorId(id);
-       pacienteRepository.deleteById(pacienteRemover.getId());
+        Paciente pacienteRemover = this.obterPorId(id);
+        pacienteRepository.deleteById(pacienteRemover.getId());
         LOGGER.info("Paciente com id " + pacienteRemover.getId() + " foi excluído com sucesso!");
     }
 
     @Override
     public void deletarTodos() {
-        if(this.obterTodos().isEmpty()){
+        if (this.obterTodos().isEmpty()) {
             throw new PacientNotFoundException("Não há pacientes a serem deletados!");
         }
         pacienteRepository.deleteAll();
@@ -140,50 +143,130 @@ public class PacienteServiceImpl implements PacienteService {
     }
 
     @Override
-    public Paciente CompareEdite(Paciente pacientU, Paciente pacientD) {//Preenche atributos vazios com objetos já existente no banco
-
-        if (pacientU.getNome() == null) {
+    public Paciente verificarPacienteTodos(Paciente pacientU, Paciente pacientD) {//Preenche atributos vazios com objetos já existente no banco
+        pacientU.setId(pacientD.getId());
+        if (pacientU.getNome() == null || pacientU.getNome() == "") {
             pacientU.setNome(pacientD.getNome());
-        }if (pacientU.getSobrenome() == null) {
+        }
+
+        if (pacientU.getSobrenome() == null || pacientU.getSobrenome() == "") {
             pacientU.setSobrenome(pacientD.getSobrenome());
-        }  if (pacientU.getDataNascimento() == null) {
+        }
+
+        if (pacientU.getDataNascimento() == null || pacientU.getDataNascimento() == "") {
             pacientU.setDataNascimento(pacientD.getDataNascimento());
-        }  if (pacientU.getCpf() == null) {
+        } else if (!dataVerificador(pacientU)) {
+            throw new DateFormatException("Data com formato ou informação não permitida!");
+        }
+
+        if (pacientU.getCpf() == null || pacientU.getCpf() == "") {
             pacientU.setCpf(pacientD.getCpf());
-        }if (pacientU.getSexo() == null) {
+        } else if ((cpfVerificador(pacientU) && !pacientU.getCpf().equals(pacientD.getCpf()) )|| !validadorCpf(pacientU.getCpf())) {
+            throw new CPFException("Cpf já cadastrado ou formato não permitido!");
+        }
+
+        if (pacientU.getSexo() == null) {
             pacientU.setSexo(pacientD.getSexo());
-        } if (pacientU.getContato() == null) {
+        }
+
+        if (pacientU.getContato() == null || pacientU.getContato() == "") {
             pacientU.setContato(pacientD.getContato());
-        }if(pacientU.getEndereco() == null){
+        } else if (!validadorTelefone(pacientU.getContato())) {
+            throw new ContactIncorrectException("O contato telefonico permitido é (11)99456-7890");
+        }
+
+        if (pacientU.getEndereco() == null) {
             pacientU.setEndereco(pacientD.getEndereco());
-        }if (pacientU.getEndereco().getLogradouro() == null) {
+        }
+
+        if (pacientU.getEndereco().getLogradouro() == null) {
             pacientU.getEndereco().setLogradouro((pacientD.getEndereco().getLogradouro()));
-        } if (pacientU.getEndereco().getNumero() == null) {
+        }
+        if (pacientU.getEndereco().getNumero() == null) {
             pacientU.getEndereco().setNumero((pacientD.getEndereco().getNumero()));
-        } if (pacientU.getEndereco().getBairro() == null) {
+        }
+        if (pacientU.getEndereco().getBairro() == null || pacientU.getEndereco().getBairro() == "") {
             pacientU.getEndereco().setBairro((pacientD.getEndereco().getBairro()));
-        } if (pacientU.getEndereco().getMunicipio() == null) {
+        }
+        if (pacientU.getEndereco().getMunicipio() == null || pacientU.getEndereco().getBairro() == "") {
             pacientU.getEndereco().setMunicipio((pacientD.getEndereco().getMunicipio()));
-        } if (pacientU.getEndereco().getEstado() == null) {
+        }
+        if (pacientU.getEndereco().getEstado() == null || pacientU.getEndereco().getBairro() == "") {
             pacientU.getEndereco().setEstado((pacientD.getEndereco().getEstado()));
         }
+
         return pacientU;
 
     }
 
     @Override
+    public boolean validadorCpf(String cpf) {
+        String regex = "\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}";
+        String cpfModify = cpf.replaceAll("[^0-9]", "");
+
+        String digitos = cpfModify.substring(0, 9);
+        int soma = 0;
+        for (int i = 0; i < 9; i++) {
+            soma += Integer.parseInt(String.valueOf(digitos.charAt(i))) * (10 - i);
+        }
+        int primeiroDigito = 11 - (soma % 11);
+        if (primeiroDigito > 9) {
+            primeiroDigito = 0;
+        }
+
+        if (Integer.parseInt(String.valueOf(cpfModify.charAt(9))) != primeiroDigito) {
+            return false;
+        }
+
+        soma = 0;
+        for (int i = 0; i < 10; i++) {
+            soma += Integer.parseInt(String.valueOf(cpfModify.charAt(i))) * (11 - i);
+        }
+        int segundoDigito = 11 - (soma % 11);
+        if (segundoDigito > 9) {
+            segundoDigito = 0;
+        }
+
+        return Pattern.matches(regex, cpf) && cpfModify.length() == 11 &&
+                Integer.parseInt(String.valueOf(cpfModify.charAt(10))) == segundoDigito;
+    }
+
+    @Override
+    public boolean validadorTelefone(String phone) {
+        String regex = "^(?:\\+55)?\\s?(?:\\(?\\d{2}\\)?\\s?\\d{4,5}-?\\d{4})$";
+        return Pattern.matches(regex, phone);
+    }
+
+    @Override
+    public boolean dataVerificador(Paciente paciente) {
+        try {
+            if (FormatDate.parse(FormatDate.format(new Date())).getTime() < FormatDate.parse(paciente.getDataNascimento()).getTime()) {
+                return false;
+            } else if (!paciente.getDataNascimento().equals(FormatDate.format(FormatDate.parse(paciente.getDataNascimento())))) {
+                System.out.println(paciente.getDataNascimento());
+                System.out.println(FormatDate.format(FormatDate.parse(paciente.getDataNascimento())));
+                return false;
+            }
+        } catch (ParseException parseException) {
+            LOGGER.info("Erro ao inserir paciente:" + parseException.getMessage());
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void inject() {
-        Paciente pacient = new Paciente("6556b65c2ba8c674fd37b804","Pablo","Santos","12345678917",
-                "1995-01-21", Sexo.Masculino,"(74)99485365",new Endereco("av. 7 de setembro",65,"2 de julho","Salvador", Estados.BA));
-        Paciente pacientUm = new Paciente("6556b65c2ba8c674fd37b803","Priscila","Fernandes","12345678914",
-                "1994-07-21",Sexo.Feminino,"(75)98485365",new Endereco("Av. luiz tarquinio",201,"Centro","Lauro de Freitas",Estados.BA));
-        Paciente pacientDois = new Paciente("6556b65c2ba8c674fd37b703","Henrique","Souto","12345674914",
-                "1994-07-21",Sexo.Masculino,"(81)98485465",new Endereco("Av. Olivia palito",74,"Centro","Caruaru",Estados.PE));
-        Paciente pacientTres = new Paciente("6556b65c2ba8c674fd37b712","Washinton","Flores","12345674935",
-                "1994-07-21",Sexo.Masculino,"(11)97485465",new Endereco("Av. Tiete",74,"São Paulo","São Paulo",Estados.SP));
-        Paciente pacientQuatro = new Paciente("6556b65c2ba8c674fd37b988","Felipe","Marques","15845672935",
-                "1992-07-21",Sexo.Feminino,"(21)97465469",new Endereco("Av. Brasil",23,"Rio de Janeiro","Rio de Janeiro",Estados.RJ));
-        List<Paciente> pacientesInjectados = new ArrayList<>(Arrays.asList(pacient,pacientUm,pacientDois,pacientTres,pacientQuatro));
+        Paciente pacient = new Paciente("6556b65c2ba8c674fd37b804", "Pablo", "Santos", "601.439.530-01",
+                "1995-01-21", Sexo.masculino, "(11)99994-5679", new Endereco("av. 7 de setembro", 65, "2 de julho", "Salvador", Estados.BA));
+        Paciente pacientUm = new Paciente("6556b65c2ba8c674fd37b803", "Priscila", "Fernandes", "353.056.010-37",
+                "1994-07-21", Sexo.feminino, "(11)99995-5679", new Endereco("Av. luiz tarquinio", 201, "Centro", "Lauro de Freitas", Estados.BA));
+        Paciente pacientDois = new Paciente("6556b65c2ba8c674fd37b703", "Henrique", "Souto", "002.984.730-38",
+                "1994-07-21", Sexo.masculino, "(11)99994-5678", new Endereco("Av. Olivia palito", 74, "Centro", "Caruaru", Estados.PE));
+        Paciente pacientTres = new Paciente("6556b65c2ba8c674fd37b712", "Washinton", "Flores", "781.112.010-01",
+                "1994-07-21", Sexo.masculino, "(11)99994-5677", new Endereco("Av. Tiete", 74, "São Paulo", "São Paulo", Estados.SP));
+        Paciente pacientQuatro = new Paciente("6556b65c2ba8c674fd37b988", "Felipe", "Marques", "854.972.870-50",
+                "1992-07-21", Sexo.feminino, "(11)99994-5689", new Endereco("Av. Brasil", 23, "Rio de Janeiro", "Rio de Janeiro", Estados.RJ));
+        List<Paciente> pacientesInjectados = new ArrayList<>(Arrays.asList(pacient, pacientUm, pacientDois, pacientTres, pacientQuatro));
         pacienteRepository.saveAll(pacientesInjectados);
     }
 }

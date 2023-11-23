@@ -40,13 +40,13 @@ public class PacienteController {
                 .body(pacienteService.obterPorId(id));
     }
     @PutMapping("/pacientes/{id}")
-    public ResponseEntity<Paciente> editarPorId(@PathVariable String id, @RequestBody  Paciente pacienteEditar){
+    public ResponseEntity<Paciente> editarPorId(@PathVariable String id, @Valid @RequestBody  Paciente pacienteEditar){
         pacienteService.editarPorId(id,pacienteEditar);
         return  ResponseEntity.status(200)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(pacienteService.obterPorId(id));
     }
-    @PostMapping("/pacientes/cadastrar")
+    @PostMapping("/pacientes")
     public ResponseEntity<Paciente> inserir(@RequestBody @Valid Paciente paciente) {
         pacienteService.inserir(paciente);
         return  ResponseEntity.status(HttpStatus.CREATED)

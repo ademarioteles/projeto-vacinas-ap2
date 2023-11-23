@@ -26,11 +26,23 @@ public class GenericHandlerException extends ResponseEntityExceptionHandler {
         LOGGER.info("Tratamentação de exceção CPFException: " + e.getMessage());
         return new ResponseEntity(mensagem, HttpStatus.BAD_REQUEST);
     }
+    @ExceptionHandler(Exception.class)
+    protected ResponseEntity handleException(Exception e) {
+        Mensagem mensagem = new Mensagem(e.getMessage());
+        LOGGER.info("Tratamentação de exceção ContactIncorrectException: " + e.getMessage());
+        return new ResponseEntity(mensagem, HttpStatus.BAD_REQUEST);
+    }
     @ExceptionHandler(PacientNotFoundException.class)
     protected ResponseEntity handleException(PacientNotFoundException e) {
         Mensagem mensagem = new Mensagem(e.getMessage());
         LOGGER.info("Tratamentação de exceção PacientNotFoundException: " + mensagem);
         return new ResponseEntity(mensagem, HttpStatus.NOT_FOUND);
+    }
+    @ExceptionHandler(DateFormatException.class)
+    protected ResponseEntity handleException(DateFormatException e) {
+        Mensagem mensagem = new Mensagem(e.getMessage());
+        LOGGER.info("Tratamentação de exceção DateFutureException: " + mensagem);
+        return new ResponseEntity(mensagem, HttpStatus.BAD_REQUEST);
     }
 
     @Override

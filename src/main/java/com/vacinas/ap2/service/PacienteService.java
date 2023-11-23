@@ -2,6 +2,9 @@ package com.vacinas.ap2.service;
 
 import com.vacinas.ap2.entity.Paciente;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
+
+import javax.validation.Valid;
 import java.util.List;
 
 @Service
@@ -14,9 +17,13 @@ public interface PacienteService {
     void editarParcialPorId(String id,Paciente paciente);
     void editar(Paciente paciente);
     void editarParcial(Paciente paciente);
-    boolean verificarPaciente(Paciente paciente);
+    boolean cpfVerificador(Paciente paciente);
     void deletePorId(String id);
     void deletarTodos();
-    Paciente CompareEdite(Paciente pacientU, Paciente pacientD);
+    Paciente verificarPacienteTodos(Paciente pacientU, Paciente pacientD);
+    boolean validadorCpf(String cpf);
+    boolean validadorTelefone(String phone);
+    boolean dataVerificador(Paciente paciente);
+
     void inject();
 }

@@ -2,7 +2,10 @@ package com.vacinas.ap2;
 
 import com.vacinas.ap2.entity.Endereco;
 import com.vacinas.ap2.entity.Paciente;
+import com.vacinas.ap2.enums.Estados;
+import com.vacinas.ap2.enums.Sexo;
 import com.vacinas.ap2.exceptions.CPFException;
+import com.vacinas.ap2.exceptions.DateFormatException;
 import com.vacinas.ap2.exceptions.PacientNotFoundException;
 import com.vacinas.ap2.repository.PacienteRepository;
 import com.vacinas.ap2.service.PacienteServiceImpl;
@@ -37,11 +40,11 @@ public class PacienteServiceTest {
         pacient.setId("f5as6das6d65as6d61");
         pacient.setNome("teste isCpfFoundException");
         pacient.setSobrenome("barbosa");
-        pacient.setCpf("12345678910");
+        pacient.setCpf("807.457.620-50");
         pacient.setDataNascimento("1991-01-21");
-        pacient.setSexo("masculino");
+        pacient.setSexo(Sexo.feminino);
         pacient.setContato("(74)99485365");
-        pacient.setEndereco( new Endereco("av. 7 de setembro",24,"2 de julho","salvador","BA"));
+        pacient.setEndereco( new Endereco("av. 7 de setembro",24,"2 de julho","salvador", Estados.BA));
         pacientes.add(pacient);
         when(pacienteRepository.findAll()).thenReturn(pacientes);
     }
@@ -62,13 +65,13 @@ public class PacienteServiceTest {
     @Test
     void inserirSucessoService(){//Verificar se inserção foi realizada com sucesso
         pacient.setId("f5as6das6d65as6d626");
-        pacient.setCpf("12345678917");
+        pacient.setCpf("575.127.020-78");
         pacienteRepository.insert(pacient);
         Assertions.assertEquals(pacienteServiceImpl.obterPorId(pacient.getId()), pacient);
     }
     @Test
     void verificarCpfExistenteSucessoService(){
-        Assertions.assertEquals(true,pacienteServiceImpl.verificarPaciente(pacient));
+        Assertions.assertEquals(true,pacienteServiceImpl.cpfVerificador(pacient));
     }
 
     @Test
@@ -78,17 +81,34 @@ public class PacienteServiceTest {
     }
 
     @Test
-    void compareEditeSucessoService(){//Compara o primeiro paciente com o outro e inclui informações caso ele esteja vazio.
+    void pacienteTodosSucessoService(){//Compara o primeiro paciente com o outro e inclui informações caso ele esteja vazio.
         Paciente newPacient = new Paciente();
         newPacient.setNome(null);
         newPacient.setSobrenome(null);
-        newPacient.setCpf(null);
+        newPacient.setCpf("807.457.620-50");
 
-        Paciente transformPaciente = pacienteServiceImpl.CompareEdite(pacient,newPacient);
+        Paciente transformPaciente = pacienteServiceImpl.verificarPacienteTodos(pacient,newPacient);
 
         Assertions.assertEquals(pacient.getNome(), transformPaciente.getNome() );
         Assertions.assertEquals(pacient.getSobrenome(), transformPaciente.getSobrenome());
-        Assertions.assertEquals(pacient.getCpf(), transformPaciente.getCpf());
+    }
+    @Test
+    void pacienteCpfErrorService(){
+        Paciente newPacient = new Paciente();
+        newPacient.setNome(null);
+        newPacient.setSobrenome(null);
+        newPacient.setCpf("80745762050");
+        Assertions.assertThrows(CPFException.class,() ->pacienteServiceImpl.verificarPacienteTodos(newPacient,pacient));
+    }
+    @Test
+    void pacienteDateErrorService(){
+        Paciente newPacient = new Paciente();
+        newPacient.setNome(null);
+        newPacient.setSobrenome(null);
+        newPacient.setCpf("807.457.620-50");
+        newPacient.setDataNascimento("2999-07-25");
+        Assertions.assertThrows(DateFormatException.class,() ->pacienteServiceImpl.verificarPacienteTodos(newPacient,pacient));
+
     }
 
     @Test

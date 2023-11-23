@@ -4,6 +4,7 @@ import com.vacinas.ap2.enums.Sexo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.br.CPF;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
@@ -23,7 +24,7 @@ public class Paciente {
     private String sobrenome;
 
     @NotEmpty(message = "O CPF do paciente não foi informado!")
-    @Pattern(regexp = "^\\d{3}\\x2E\\d{3}\\x2E\\d{3}\\x2D\\d{2}$",message = "O formato do CPF esta incorreto, formato correto é 123.123.145-35.")
+    @CPF(message = "O formato do CPF esta incorreto, formato correto é 123.123.145-35.")
     private String cpf;
 
     @NotEmpty(message = "A data de nascimento do paciente não foi informado!")

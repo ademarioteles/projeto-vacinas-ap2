@@ -205,7 +205,9 @@ public class PacienteServiceImpl implements PacienteService {
     public boolean validadorCpf(String cpf) {
         String regex = "\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}";
         String cpfModify = cpf.replaceAll("[^0-9]", "");
-
+        if(cpfModify.length() != 11){
+            throw new CPFException("O cpf não possui o numero de digitos necessarios.");
+        }
         String digitos = cpfModify.substring(0, 9);
         int soma = 0;
         for (int i = 0; i < 9; i++) {

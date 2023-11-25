@@ -23,7 +23,7 @@ public class Paciente {
     @NotEmpty(message = "O sobronome do paciente não foi informado!")
     private String sobrenome;
 
-    @CPF(message = "O formato do CPF está incorreto, formato correto é 123.123.145-35.")
+    @CPF(message = "CPF invalido, formato correto é 153.445.190-01.")
     private String cpf;
 
     @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$",message = "A data deve ter um formato igual a 2023-07-29")
